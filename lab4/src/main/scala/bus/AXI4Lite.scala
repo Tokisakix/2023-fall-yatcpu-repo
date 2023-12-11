@@ -153,7 +153,62 @@ class AXI4LiteSlave(addrWidth: Int, dataWidth: Int) extends Module {
   val BRESP = WireInit(0.U(AXI4Lite.respWidth))
   io.channels.write_response_channel.BRESP := BRESP
   //lab4(BUS)
-
+  switch(state) {
+    is(AXI4LiteStates.Idle) {
+      read := false.B
+      write := false.B
+      RVALID := false.B
+      BVALID := false.B
+      when(io.channels.write_address_channel.AWVALID) {
+        state := AXI4LiteStates.WriteAddr
+      }.elsewhen(io.channels.read_address_channel.ARVALID) {
+        state := AXI4LiteStates.ReadAddr
+      }
+    }
+    is(AXI4LiteStates.ReadAddr) {
+      ARREADY := true.B
+      when(io.channels.read_address_channel.ARVALID && ARREADY) {
+        state := AXI4LiteStates.ReadData
+        addr := io.channels.read_address_channel.ARADDR
+        read := true.B
+        ARREADY := false.B
+      }
+    }
+    is(AXI4LiteStates.ReadData) {
+      RVALID := io.bundle.read_valid
+      when(io.channels.read_data_channel.RREADY && RVALID) {
+        state := AXI4LiteStates.Idle
+        RVALID := false.B
+      }
+    }
+    is(AXI4LiteStates.WriteAddr) {
+      AWREADY := true.B
+      when(io.channels.write_address_channel.AWVALID && AWREADY) {
+        addr := io.channels.write_address_channel.AWADDR
+        state := AXI4LiteStates.WriteData
+        AWREADY := false.B
+      }
+    }
+    is(AXI4LiteStates.WriteData) {
+      WREADY := true.B
+      when(io.channels.write_data_channel.WVALID && WREADY) {
+        state := AXI4LiteStates.WriteResp
+        write_data := io.channels.write_data_channel.WDATA
+        write_strobe := io.channels.write_data_channel.WSTRB.asBools
+        write := true.B
+        WREADY := false.B
+      }
+    }
+    is(AXI4LiteStates.WriteResp) {
+      WREADY := false.B
+      BVALID := true.B
+      when(io.channels.write_response_channel.BREADY && BVALID) {
+        state := AXI4LiteStates.Idle
+        write := false.B
+        BVALID := false.B
+      }
+    }
+  }
 }
 
 class AXI4LiteMaster(addrWidth: Int, dataWidth: Int) extends Module {
@@ -191,7 +246,67 @@ class AXI4LiteMaster(addrWidth: Int, dataWidth: Int) extends Module {
   io.channels.write_data_channel.WSTRB := write_strobe.asUInt
   val BREADY = RegInit(false.B)
   io.channels.write_response_channel.BREADY := BREADY
-
   //lab4(BUS)
-
+  switch(state) {
+    is(AXI4LiteStates.Idle) {
+      WVALID := false.B
+      AWVALID := false.B
+      ARVALID := false.B
+      RREADY := false.B
+      read_valid := false.B
+      write_valid := false.B
+      when(io.bundle.write) {
+        state := AXI4LiteStates.WriteAddr
+        addr := io.bundle.address
+        write_data := io.bundle.write_data
+        write_strobe := io.bundle.write_strobe
+      }.elsewhen(io.bundle.read) {
+        state := AXI4LiteStates.ReadAddr
+        addr := io.bundle.address
+      }
+    }
+    is(AXI4LiteStates.ReadAddr) {
+      ARVALID := true.B
+      io.channels.read_address_channel.ARADDR := addr
+      when(io.channels.read_address_channel.ARREADY && ARVALID) {
+        state := AXI4LiteStates.ReadData
+        io.channels.read_address_channel.ARADDR := addr
+        ARVALID := false.B
+      }
+    }
+    is(AXI4LiteStates.ReadData) {
+      when(io.channels.read_data_channel.RVALID && io.channels.read_data_channel.RRESP === 0.U) {
+        state := AXI4LiteStates.Idle
+        read_valid := true.B
+        RREADY := true.B
+        read_data := io.channels.read_data_channel.RDATA
+      }
+    }
+    is(AXI4LiteStates.WriteAddr) {
+      AWVALID := true.B
+      io.channels.write_address_channel.AWADDR := addr
+      when(io.channels.write_address_channel.AWREADY && AWVALID) {
+        state := AXI4LiteStates.WriteData
+        io.channels.write_address_channel.AWADDR := addr
+        AWVALID := false.B
+      }
+    }
+    is(AXI4LiteStates.WriteData) {
+      WVALID := true.B
+      io.channels.write_address_channel.AWADDR := addr
+      when(io.channels.write_data_channel.WREADY && WVALID) {
+        io.channels.write_address_channel.AWADDR := addr
+        state := AXI4LiteStates.WriteResp
+        WVALID := false.B
+      }
+    }
+    is(AXI4LiteStates.WriteResp) {
+      BREADY := true.B
+      when(io.channels.write_response_channel.BVALID && BREADY) {
+        state := AXI4LiteStates.Idle
+        write_valid := true.B
+        BREADY := false.B
+      }
+    }
+  }
 }

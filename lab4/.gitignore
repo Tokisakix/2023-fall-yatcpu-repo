@@ -354,5 +354,6 @@ verilog/verilator/*
 vivado/basys3/riscv-basys3
 vivado/pynq/riscv-pynq
 vivado/pynq/NA
+vivado/z710/riscv-z710
 .vscode
 .metals
