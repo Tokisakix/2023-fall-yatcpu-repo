@@ -1,1 +1,0 @@
-docker run -d -it --rm --name YatCPU -v /c/Users/21168/Desktop/2022-fall-yatcpu-repo:/root/yatcpu howardlau1999/yatcpu
