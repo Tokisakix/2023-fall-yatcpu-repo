@@ -1,6 +1,8 @@
 # YatCPU
 
-本仓库由 [Tokisakix](https://github.com/Tokisakix)、[PurplePower](https://github.com/PurplePower)、[Han Huang](https://github.com/HHTheBest) 在 [2022-fall-yatcpu-repo](https://github.com/hrpccs/2022-fall-yatcpu-repo) 的基础上结合 2023 机组教学实情整理而来
+本仓库由 [Tokisakix](https://github.com/Tokisakix)、[PurplePower](https://github.com/PurplePower)、[Han Huang](https://github.com/HHTheBest) 在 [2022-fall-yatcpu-repo](https://github.com/hrpccs/2022-fall-yatcpu-repo) 的基础上结合 2023 机组教学实情整理而来，有较多原创内容
+
+(PS: 能求个 star⭐ 吗 QAQ ~)
 
 ## 为什么需要本仓库？
 
@@ -68,6 +70,9 @@
 2. **使用一键烧板脚本**
 
     > 此烧板脚本对任意方式配置的开发环境都有效，因为 vivado 的烧板跟开发环境是**相互独立**的，如果你使用 Dev Container 或 WSL 配置环境，你需要回到 Windows 下打开 PowerShell 进行烧板。
+    > **此部分内容借鉴自 [YatCPU 的烧板验证](https://yatcpu.sysu.tech/getting-started/program-device/)**
+
+    原则上你可以在任意一个 lab 文件夹中使用下方的脚本进行烧板，下方的演示路径为 <code>2023-fall-yatcpu-repo/mini-yatcpu/</code>
 
     **生成 Verilog 文件**
 
@@ -114,5 +119,3 @@
 - [YatCPU 文档地址](https://yatcpu.sysu.tech)
 - [YatCPU 的 Dev Container 环境配置](http://tokisakix.cn/2023/11/14/%5BDocker%5D%20YatCPU%20%E7%9A%84%20Dev%20container%20%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/)
 - [测试 Tokisakix 的烧板文件](https://blog.skyw.cc/archives/258.html)
-
-(PS: 能求个 star⭐ 吗 QAQ ~)
