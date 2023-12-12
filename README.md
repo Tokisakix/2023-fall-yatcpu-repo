@@ -4,27 +4,33 @@
 
 (PS: 能求个 star⭐ 吗 QAQ ~)
 
-[TOC]
+- [YatCPU](#yatcpu)
+  * [为什么创建本仓库？](#jmp1)
+  * [本整合仓库具有以下特点：](#jmp2)
+  * [如何使用本整合仓库？](#jmp3)
+    + [使用 Vscode + Dev Container 来一键完成环境配置](#jmp31)
+    + [使用一键烧板脚本](#jmp32)
+  * [外部参考链接](#jmp4)
 
-## 为什么创建本仓库？
+## <span id="jmp1">为什么创建本仓库？</span>
 
 1.  开发环境配置困难，为配置开发环境需要付出很多精力，开发效率低
 2.  学生在运行 <code>build.bat</code> 或 <code>build.sh</code> 时经常遇到问题
 3.  原教学仓库 [2022-fall-yatcpu-repo](https://github.com/hrpccs/2022-fall-yatcpu-repo) 并不支持 ZYBO-Z710 开发板的烧录
 4.  ZYBO-Z710 烧板流程复杂、为支持烧板脚本的正常运行需要学生手动根据助教增改很多文件，开发效率低
 
-## 本整合仓库具有以下特点：
+## <span id="jmp2">本整合仓库具有以下特点：</span>
 
 - 提供基于 Vscode + Dev Container 一键环境配置工具和配套文档
 - 已提前用 cmake 编译好测试文件，无须再运行 <code>build.bat</code> 或 <code>build.sh</code>
 - 完全保留了原教学仓库的代码段填空设置和项目架构，代码迁移便利
 - 支持 Basys3、Pynq、Verilator、ZYBO-Z710 四款开发板的一键烧录，学生可以专心把精力集中在 CPU 的编写
 
-## 如何使用本整合仓库？
+## <span id="jmp3">如何使用本整合仓库？</span>
 
 下列内容主要讲述如何使用本仓库来完成开发环境的一键配置和一键烧板
 
-### 使用 Vscode + Dev Container 来一键完成环境配置
+### <span id="jmp31">使用 Vscode + Dev Container 来一键完成环境配置</span>
 
 > 如果你已经在你的设备上完成了开发的环境配置，可以跳过此内容。
 > **此部分内容搬运自 [YatCPU 的 Dev Container 环境配置](http://tokisakix.cn/2023/11/14/%5BDocker%5D%20YatCPU%20%E7%9A%84%20Dev%20container%20%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/)**，你可以前往文档原地址获得更好的阅读体验
@@ -70,7 +76,7 @@
 
 后续当你需要再次启动开发环境时，按相同的步骤运行 Dev Containers 即可，此时 Dev Containers 会自动使用之前已经配置好的环境，不需要再次花费十几分钟等待环境配置
 
-### 使用一键烧板脚本
+### <span id="jmp32">使用一键烧板脚本</span>
 
 > 此烧板脚本对任意方式配置的开发环境都有效，因为 vivado 的烧板跟开发环境是**相互独立**的，如果你使用 Dev Container 或 WSL 配置环境，你需要回到 Windows 下打开 PowerShell 进行烧板。
 > **此部分内容借鉴自 [YatCPU 的烧板验证](https://yatcpu.sysu.tech/getting-started/program-device/)**
@@ -118,7 +124,7 @@ cd vivado/z710
 
 后续将上述 program_device.tcl 换成 generate_and_program.tcl 可以将生成比特流和烧板在一个脚本中完成。
 
-## 外部参考链接
+## <span id="jmp4">外部参考链接</span>
 - [YatCPU 文档地址](https://yatcpu.sysu.tech)
 - [YatCPU 的 Dev Container 环境配置](http://tokisakix.cn/2023/11/14/%5BDocker%5D%20YatCPU%20%E7%9A%84%20Dev%20container%20%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/)
 - [测试 Tokisakix 的烧板文件](https://blog.skyw.cc/archives/258.html)
