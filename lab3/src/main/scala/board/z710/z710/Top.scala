@@ -1,119 +1,101 @@
+// Copyright 2022 Canbin Huang
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package board.z710
 
-
 import chisel3._
-import chisel3.stage.ChiselStage
-import chisel3.util._
-import chisel3.{ChiselEnum, _}
-
-// import circt.stage.ChiselStage
-import chisel3.stage.ChiselGeneratorAnnotation
-
-import bus._
+import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
+import chisel3.util.Cat
 import peripheral._
-import riscv._
 import riscv.Parameters
 import riscv.core.CPU
-import javax.print.SimpleDoc
 
-object BootStates extends ChiselEnum {
-  val Init, Loading, BusWait, Finished = Value
-}
-
-
-class Top(binaryFilename: String ="say_goodbye.asmbin") extends Module {
-  // val binaryFilename = "say_goodbye.asmbin"
-  val io = IO(new Bundle {
-    // val switch = Input(UInt(16.W))
-
-    // val rgb = Output(UInt(12.W))
-
-    val led = Output(Bool())
+class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
+  val io = IO(new Bundle() {
     val tx = Output(Bool())
     val rx = Input(Bool())
 
-
+    val led = Output(Bool())  // z710 has few LEDs, use one for running indicator
   })
-  val boot_state = RegInit(BootStates.Init)
+  val mem = Module(new Memory(Parameters.MemorySizeInWords))
+  // val hdmi_display = Module(new HDMIDisplay)
+  // val display = Module(new CharacterDisplay)
+  val timer = Module(new Timer)
+  val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200)) // 31M or 32M is good, 33M more error
+  val dummy = Module(new Dummy)
 
-  val uart = Module(new Uart(125_000_000, 115200))  // this freq is consistent with Zynq 7 PS UART module
+  // display.io.bundle <> dummy.io.bundle
+  mem.io.bundle <> dummy.io.bundle
+  mem.io.debug_read_address := 0.U
+  timer.io.bundle <> dummy.io.bundle
+  uart.io.bundle <> dummy.io.bundle
   io.tx := uart.io.txd
   uart.io.rxd := io.rx
-
-  val cpu = Module(new CPU)
-  val mem = Module(new Memory(Parameters.MemorySizeInWords))
-  val timer = Module(new Timer)
-  val dummy = Module(new DummySlave)
-  val bus_arbiter = Module(new BusArbiter)
-  val bus_switch = Module(new BusSwitch)
 
   val instruction_rom = Module(new InstructionROM(binaryFilename))
   val rom_loader = Module(new ROMLoader(instruction_rom.capacity))
 
-  bus_arbiter.io.bus_request(0) := true.B
-
-  bus_switch.io.master <> cpu.io.axi4_channels
-  bus_switch.io.address := cpu.io.bus_address
-  for (i <- 0 until Parameters.SlaveDeviceCount) {
-    bus_switch.io.slaves(i) <> dummy.io.channels
-  }
-  rom_loader.io.load_address := Parameters.EntryAddress
-  rom_loader.io.load_start := false.B
   rom_loader.io.rom_data := instruction_rom.io.data
+  rom_loader.io.load_address := Parameters.EntryAddress
   instruction_rom.io.address := rom_loader.io.rom_address
-  cpu.io.stall_flag_bus := true.B
-  cpu.io.instruction_valid := false.B
-  bus_switch.io.slaves(0) <> mem.io.channels
-  rom_loader.io.channels <> dummy.io.channels
-  switch(boot_state) {
-    is(BootStates.Init) {
-      rom_loader.io.load_start := true.B
-      boot_state := BootStates.Loading
-      rom_loader.io.channels <> mem.io.channels
-    }
-    is(BootStates.Loading) {
-      rom_loader.io.load_start := false.B
-      rom_loader.io.channels <> mem.io.channels
-      when(rom_loader.io.load_finished) {
-        boot_state := BootStates.Finished
+
+  val CPU_clkdiv = RegInit(UInt(2.W),0.U)
+  val CPU_tick = Wire(Bool())
+  val CPU_next = Wire(UInt(2.W))
+  CPU_next := Mux(CPU_clkdiv === 3.U, 0.U, CPU_clkdiv + 1.U)
+  CPU_tick := CPU_clkdiv === 0.U
+  CPU_clkdiv := CPU_next
+
+  withClock(CPU_tick.asClock) {
+    val cpu = Module(new CPU)
+    cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
+    cpu.io.instruction_valid := rom_loader.io.load_finished
+    mem.io.instruction_address := cpu.io.instruction_address
+    cpu.io.instruction := mem.io.instruction
+    cpu.io.debug_read_address := 0.U
+
+    when(!rom_loader.io.load_finished) {
+      rom_loader.io.bundle <> mem.io.bundle
+      cpu.io.memory_bundle.read_data := 0.U
+    }.otherwise {
+      rom_loader.io.bundle.read_data := 0.U
+      when(cpu.io.device_select === 4.U) {
+        cpu.io.memory_bundle <> timer.io.bundle
+      }.elsewhen(cpu.io.device_select === 2.U) { // deviceSelect = highest 3 bits of address, thus 0x4000_0000 is mapped to UART
+        cpu.io.memory_bundle <> uart.io.bundle
+      }.otherwise {
+        cpu.io.memory_bundle <> mem.io.bundle
       }
     }
-    is(BootStates.Finished) {
-      cpu.io.stall_flag_bus := false.B
-      cpu.io.instruction_valid := true.B
-    }
   }
 
-  bus_switch.io.slaves(2) <> uart.io.channels
-  bus_switch.io.slaves(4) <> timer.io.channels
-
-  cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
-
-  cpu.io.debug_read_address := 0.U
-  mem.io.debug_read_address := 0.U
-
-
-  
-  val clock_freq = 100_000_000.U
-
+  // LED, blinks every second
+  val clock_freq = 40_000_000.U
   val led_count = RegInit(0.U(32.W))
-  when (led_count >= clock_freq) { // the led blinks every second, clock freq is 100M
+  when (led_count >= clock_freq) {
     led_count := 0.U
   }.otherwise {
     led_count := led_count + 1.U
   }
-
   io.led := (led_count >= (clock_freq >> 1))
 
 
 }
 
-
-
 object VerilogGenerator extends App {
-    (new ChiselStage).execute(
-        Array("-X", "verilog", "--target-dir", "verilog/z710"), 
-        Seq(ChiselGeneratorAnnotation(() => new Top())) // default bin file
-    )
-    
+  (new ChiselStage).execute(
+    Array("-X", "verilog", "-td", "verilog/z710"), 
+    Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
+  )
 }
