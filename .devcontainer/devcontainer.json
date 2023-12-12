@@ -1,0 +1,6 @@
+{
+    "name": "YatCPU",
+    "build": {
+        "dockerfile": "Dockerfile"
+    }
+}
