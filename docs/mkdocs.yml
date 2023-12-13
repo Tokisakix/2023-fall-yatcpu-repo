@@ -3,7 +3,7 @@ site_author: Tokisakix
 copyright: Copyright © 2023 Tokisakix
 
 nav:
-- 主页: index.md
+- 前言: index.md
 - 如何一键环境配置: env.md
 - 如何一键烧板: board.md
 

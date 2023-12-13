@@ -1,3 +1,5 @@
+Writen By: [Tokisakix](https://github.com/Tokisakix)
+
 # 如何使用一键烧板脚本
 
 > 此烧板脚本对任意方式配置的开发环境都有效，因为 vivado 的烧板跟开发环境是**相互独立**的，如果你使用 Dev Container 或 WSL 配置环境，你需要回到 Windows 下打开 PowerShell 进行烧板。
@@ -14,6 +16,8 @@
 ```
 sbt "runMain board.z710.VerilogGenerator"
 ```
+
+你也可以在配置好环境的 IDEA 中打开 src/main/scala/board/z710/Top.scala，点击 object VerilogGenerator extends App 一行左边的绿色三角形运行即可。
 
 **生成比特流二进制文件**
 
