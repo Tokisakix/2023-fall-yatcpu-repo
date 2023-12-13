@@ -17,7 +17,7 @@
 
 在 VSCode 的扩展处搜索 Dev Containers，下载安装
 
-![image](/asset/devcontainer1.png)
+![image](asset/devcontainer1.png)
 
 **使用 Dev Containers 打开项目**
 
@@ -25,7 +25,7 @@
 
 在上方的运行选项中选择在容器中重新打开，这个命令会让 Dev container 自动根据 <code>devcontainer.json</code> 里的配置信息来创建 Docker 环境
 
-![image](/asset/devcontainer2.png)
+![image](asset/devcontainer2.png)
 
 如果你是第一次在容器中打开，你可能需要十几分钟的时间等待容器配置完毕，如果在配置过程中发生异常，请检查你的网络情况后再次运行
 
@@ -35,7 +35,7 @@
 
 新建终端输入 <code>sbt test</code>，期望你有如下输出
 
-![image](/asset/devcontainer3.png)
+![image](asset/devcontainer3.png)
 
 ```bash
 [info] All tests passed.

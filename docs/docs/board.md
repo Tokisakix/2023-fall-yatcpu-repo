@@ -39,6 +39,6 @@ cd vivado/z710
 
 **如果烧板无误，你会看到黄灯亮起**
 
-![image](/asset/z710.jpg)
+![image](asset/z710.jpg)
 
 后续将上述 program_device.tcl 换成 generate_and_program.tcl 可以将生成比特流和烧板在一个脚本中完成。
