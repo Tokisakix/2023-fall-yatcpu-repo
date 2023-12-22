@@ -19,3 +19,16 @@ cd 2023-fall-yatcpu-repo/docs
 pip install -r requirements.txt
 mkdocs serve
 ```
+
+
+
+## TODO list
+
+1. better automation
+2. add riscv-m extension
+3. using rx for receive from PC
+4. using other display ports
+5. summary of problems
+6. add more test on alu source to ExecuteTest
+7. bug on lab3 5-stage pipeline ID.rs2
+8. TODO: ?disable verilator to debug
