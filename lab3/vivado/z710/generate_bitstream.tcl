@@ -54,4 +54,8 @@ while 1 {
 
 wait_on_run impl_1
 
-file rename riscv-z710/riscv-z710.runs/impl_1/design_1_wrapper.bit riscv-z710/riscv-z710.runs/impl_1/Top.bit
+# copy the bitstream so vivado GUI still finds it
+file copy riscv-z710/riscv-z710.runs/impl_1/design_1_wrapper.bit riscv-z710/riscv-z710.runs/impl_1/Top.bit
+
+# this will export platform .xsz
+write_hw_platform -fixed -include_bit -force -file ./riscv-z710/Top.xsa
