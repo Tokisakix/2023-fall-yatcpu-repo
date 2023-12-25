@@ -48,9 +48,9 @@ xsct ./vitis_prj_run.tcl
 
 该段描述这些脚本如何获得，若您希望了解其中原理或做出贡献，可以阅读本节。
 
-### Lab1 auxiliary file related
+### lab2 auxiliary file related
 
-lab1 中的 `clock_control.v` 进行4分频，避免生成方案 Worst Negative Slack 超标：因为仍是单周期 CPU，单时钟时间过短导致电路来不及产生结果。
+CPU 输入频率4分频。
 
 ### Use with Vivado 2020.1
 
