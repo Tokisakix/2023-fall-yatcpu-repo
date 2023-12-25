@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-source open_project.tcl
+source open_project-v2020.tcl
 
 while 1 {
     if { [catch {launch_runs synth_1 -jobs 4 } ] } {
@@ -54,8 +54,8 @@ while 1 {
 
 wait_on_run impl_1
 
-# copy the bitstream so vivado GUI still finds it
-file copy riscv-z710/riscv-z710.runs/impl_1/design_1_wrapper.bit riscv-z710/riscv-z710.runs/impl_1/Top.bit
 
-# this will export platform .xsz
-write_hw_platform -fixed -include_bit -force -file ./riscv-z710/Top.xsa
+# export hardware platform to Vitis
+set_property pfm_name {} [get_files -all $project_dir/$project_name.srcs/sources_1/bd/design_1/design_1.bd]
+write_hw_platform -fixed -include_bit -force -file $project_dir/design_1_wrapper.xsa
+
