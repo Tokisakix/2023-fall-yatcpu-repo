@@ -50,7 +50,7 @@ xsct ./vitis_prj_run.tcl
 
 ### lab4 auxiliary file related
 
-CPU 输入频率4分频。
+CPU 输入频率不分频，为 50 MHz。
 
 ### Use with Vivado 2020.1
 
