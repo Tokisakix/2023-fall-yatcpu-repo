@@ -190,10 +190,10 @@ set obj [get_filesets utils_1]
 
 # Adding sources referenced in BDs, if not already added
 if { [get_files Top.v] == "" } {
-  import_files -quiet -fileset sources_1 E:/Workplace/2022-fall-yatcpu-repo/lab1/verilog/z710/Top.v
+  import_files -quiet -fileset sources_1 "${origin_dir}/../../verilog/z710/Top.v"
 }
 if { [get_files clock_control.v] == "" } {
-  import_files -quiet -fileset sources_1 E:/Workplace/2022-fall-yatcpu-repo/lab1/verilog/z710/clock_control.v
+  import_files -quiet -fileset sources_1 "${origin_dir}/../../verilog/z710/clock_control.v"
 }
 
 
