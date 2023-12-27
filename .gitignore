@@ -1,1 +1,8 @@
 target
+.vscode
+.metals
+**/test_run_dir
+
+# vivado stuffs
+**/*.jou
+**/*.log

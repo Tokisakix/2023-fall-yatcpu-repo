@@ -54,4 +54,8 @@ while 1 {
 
 wait_on_run impl_1
 
-file rename riscv-z710/riscv-z710.runs/impl_1/design_1_wrapper.bit riscv-z710/riscv-z710.runs/impl_1/Top.bit
+
+# export hardware platform to Vitis
+set_property pfm_name {} [get_files -all $project_dir/$project_name.srcs/sources_1/bd/design_1/design_1.bd]
+write_hw_platform -fixed -include_bit -force -file $project_dir/design_1_wrapper.xsa
+
