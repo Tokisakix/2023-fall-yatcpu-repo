@@ -80,6 +80,18 @@ set wrapper_path [make_wrapper -fileset sources_1 -files [ get_files -norecurse 
 add_files -norecurse -fileset sources_1 $wrapper_path
 ```
 
+3. 修正脚本中使用了导出电脑上绝对路径的命令，在 `Adding sources referenced in BDs, if not already added`（Line 191）处使用的绝对路径替换为项目文件夹下相对路径。
+
+```tcl
+# Adding sources referenced in BDs, if not already added
+if { [get_files Top.v] == "" } {
+  import_files -quiet -fileset sources_1 "${origin_dir}/../../verilog/z710/Top.v"
+}
+if { [get_files clock_control.v] == "" } {
+  import_files -quiet -fileset sources_1 "${origin_dir}/../../verilog/z710/clock_control.v"
+}
+```
+
 修改后上述脚本就能重建项目。
 
 `open_project.tcl` 直接打开项目的 .xpr 项目文件，`generate_bitstream.tcl` 再生成比特流，并额外导出硬件平台。

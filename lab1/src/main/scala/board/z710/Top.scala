@@ -31,17 +31,17 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
-  // val timer = Module(new Timer)
-  // val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200)) // 31M or 32M is good, 33M more error
+  val timer = Module(new Timer)
+  val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200)) // 31M or 32M is good, 33M more error
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
   mem.io.bundle <> dummy.io.bundle
   mem.io.debug_read_address := 0.U
-  // timer.io.bundle <> dummy.io.bundle
-  // uart.io.bundle <> dummy.io.bundle
-  // io.tx := uart.io.txd
-  // uart.io.rxd := io.rx
+  timer.io.bundle <> dummy.io.bundle
+  uart.io.bundle <> dummy.io.bundle
+  io.tx := uart.io.txd
+  uart.io.rxd := io.rx
   io.tx := 0.U
 
   val instruction_rom = Module(new InstructionROM(binaryFilename))
@@ -60,26 +60,26 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
-    // cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
-    // cpu.io.csr_regs_debug_read_address := 0.U
-    // cpu.io.regs_debug_read_address := 0.U
+    cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
+    cpu.io.csr_regs_debug_read_address := 0.U
+    cpu.io.regs_debug_read_address := 0.U
     cpu.io.debug_read_address := 0.U
     // cpu.io.memory_bundle.read_data := 0.U
     cpu.io.instruction_valid := rom_loader.io.load_finished
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
 
-    // when(!rom_loader.io.load_finished) {
-    //   rom_loader.io.bundle <> mem.io.bundle
-    //   cpu.io.memory_bundle.read_data := 0.U
-    // }.otherwise {
-    //   rom_loader.io.bundle.read_data := 0.U
-    //   when(cpu.io.deviceSelect === 2.U) {
-    //     cpu.io.memory_bundle <> uart.io.bundle
-    //   }.otherwise {
-    //     cpu.io.memory_bundle <> mem.io.bundle
-    //   }
-    // }
+    when(!rom_loader.io.load_finished) {
+      rom_loader.io.bundle <> mem.io.bundle
+      cpu.io.memory_bundle.read_data := 0.U
+    }.otherwise {
+      rom_loader.io.bundle.read_data := 0.U
+      when(cpu.io.deviceSelect === 2.U) {
+        cpu.io.memory_bundle <> uart.io.bundle
+      }.otherwise {
+        cpu.io.memory_bundle <> mem.io.bundle
+      }
+    }
 
     when(!rom_loader.io.load_finished) {
       rom_loader.io.bundle <> mem.io.bundle
