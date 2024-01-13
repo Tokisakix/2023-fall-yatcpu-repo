@@ -1,10 +1,16 @@
 
 # 如何使用脚本使 CPU 烧录至 Zybo Z7-10 开发板并读取 UART 输出至电脑
 
+## 0. 预先准备
 
-步骤如下：
+在执行下述步骤前，请确保完成：
 
-此处用 `vivado` 和 `xsct` 工具，并假设您已在 `vivado/z710` 目录下打开终端。（TODO）
+1. 通过 CPUTest 确保实现无误
+2. 在 `src\main\scala\z710\Top.scala` 运行 `VerilogGenerator` 并生成 verilog\z710\Top.v 。
+3. 安装 board files 至 vivado。在 https://github.com/Digilent/vivado-boards 下载压缩包，然后将压缩包中 new\board\_files 目录下以 `zybo` 开头的三个文件夹复制到如 E:\Xilinx\Vivado\2020.1\data\boards\board\_files 目录下。
+
+
+此处用 `vivado` 和 `xsct` 工具，并假设您已在 `vivado/z710` 目录下打开终端。若您未将 `vivado.bat` 和 `xsct` 添加到系统 PATH，则应将其替换为如 E:\Xilinx\Vivado\2020.1\bin\vivado 和  E:\Xilinx\Vitis\2020.1\bin\xsct  。
 
 ## 1. 生成 Vivado 项目
 
