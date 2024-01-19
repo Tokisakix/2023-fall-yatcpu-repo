@@ -30,7 +30,7 @@ bsp config stdout ps7_uart_1
 bsp config stdin ps7_uart_1
 
 platform write
-platform generate
+# platform generate # redundant
 
 
 if {![file exists $vitis_ws/$vitis_prj_name]} {

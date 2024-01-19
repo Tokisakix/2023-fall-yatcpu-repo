@@ -12,16 +12,18 @@
 
 此处用 `vivado` 和 `xsct` 工具，并假设您已在 `vivado/z710` 目录下打开终端。若您未将 `vivado.bat` 和 `xsct` 添加到系统 PATH，则应将其替换为如 E:\Xilinx\Vivado\2020.1\bin\vivado 和  E:\Xilinx\Vitis\2020.1\bin\xsct  。
 
+若您使用 2020.1 或较久版本的 Xilinx 工具，在 Windows Powershell 中执行将在额外弹出的窗口中运行 `vivado` 和 `xsct`。您可以在命令前添加 `cmd /c` 以指定其在 cmd 中运行并保留输出至本窗口。
+
 ## 1. 生成 Vivado 项目
 
 确保您的 `verilog/z710` 下已生成 Top.v ，且其他组件的 verilog 文件都存在。
 执行命令以生成设计：
 
 ```pwsh
-vivado -mode batch -source ./riscv-z710-v2020.tcl
+cmd /c vivado -mode batch -source ./riscv-z710-v2020.tcl
 ```
 
-完成后，您应见文件夹 `vivado/z710/riscv-z710-v2020`，且其中有 `riscv-z710-v2020.xpr`。
+您应见文件夹 `vivado/z710/riscv-z710-v2020` 被创建，且其中有 `riscv-z710-v2020.xpr`。请您注意运行过程中任何错误提示，包括未安装 board files 提示 parts 未找到、未找到对应文件等情况。
 
 
 
@@ -30,7 +32,7 @@ vivado -mode batch -source ./riscv-z710-v2020.tcl
 完成上一步骤后，执行命令以生成比特流、导出硬件平台 .xsa 文件。
 
 ```pwsh
-vivado -mode batch -source ./generate_bitstream.tcl
+cmd /c vivado -mode batch -source ./generate_bitstream.tcl
 ```
 
 完成后，您应见 `vivado\z710\riscv-z710-v2020\design_1_wrapper.xsa` 文件。
@@ -41,7 +43,7 @@ vivado -mode batch -source ./generate_bitstream.tcl
 完成上一步骤后，将开发板连接至电脑，并开启电源。随后执行命令将 CPU 烧录至开发板，并使 Zynq 处理器监听并返回 UART 输出：
 
 ```pwsh
-xsct ./vitis_prj_run.tcl
+cmd /c xsct ./vitis_prj_run.tcl
 ```
 
 若成功，您应看到开发板的 LD0 灯在打开其下方的 G15 开关（该开关控制输入CPU的时钟开关）时会闪烁，同时右侧 BTN16 上方的 LD12 已烧录指示灯亮起为绿色。
