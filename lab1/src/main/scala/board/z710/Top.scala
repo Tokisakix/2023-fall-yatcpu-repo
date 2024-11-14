@@ -42,7 +42,6 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   uart.io.bundle <> dummy.io.bundle
   io.tx := uart.io.txd
   uart.io.rxd := io.rx
-  io.tx := 0.U
 
   val instruction_rom = Module(new InstructionROM(binaryFilename))
   val rom_loader = Module(new ROMLoader(instruction_rom.capacity))
