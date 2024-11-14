@@ -18,7 +18,7 @@ import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
 import riscv.TestAnnotations
-import riscv.core.{ALUOp1Source, ALUOp2Source, InstructionDecode, InstructionTypes}
+import riscv.core.{ALUOp1Source, ALUOp2Source, RegWriteSource, InstructionDecode, InstructionTypes}
 
 class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
   behavior of "InstructionDecoder of Single Cycle CPU"

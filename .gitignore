@@ -1,8 +1,13 @@
 target
 .vscode
 .metals
+.bloop
 **/test_run_dir
 
 # vivado stuffs
 **/*.jou
 **/*.log
+
+**/hello_z710-test
+**/riscv-z710-v2020
+.Xil
