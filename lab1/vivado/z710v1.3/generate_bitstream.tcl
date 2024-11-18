@@ -19,6 +19,8 @@ set project_name "rv-z710v1.3-20"
 
 open_project $project_dir/$project_name.xpr
 
+update_module_reference design_1_Top_0_0
+
 while 1 {
     if { [catch {launch_runs synth_1 -jobs 4 } ] } {
         regexp {ERROR: \[Common (\d+-\d+)]} $errorInfo -> code
@@ -58,9 +60,4 @@ while 1 {
 }
 
 wait_on_run impl_1
-
-
-# export hardware platform to Vitis
-set_property pfm_name {} [get_files -all $project_dir/$project_name.srcs/sources_1/bd/design_1/design_1.bd]
-write_hw_platform -fixed -include_bit -force -file $project_dir/design_1_wrapper.xsa
 

@@ -15,10 +15,12 @@ set_property PACKAGE_PIN J16 [get_ports io_led];   # PL_LED0
 #set_property -dict {PACKAGE_PIN M15 IOSTANDARD LVCMOS33} [get_ports io_led_2];
 
 # switches
-set_property -dict {PACKAGE_PIN V17 IOSTANDARD LVCMOS33} [get_ports clk_enalbe]; # PL_SW1
+set_property -dict {PACKAGE_PIN V17 IOSTANDARD LVCMOS33} [get_ports clk_enable]; # PL_SW1
+set_property -dict {PACKAGE_PIN Y16 IOSTANDARD LVCMOS33} [get_ports io_reset];  # PL_SW2
 
-# buttons
-set_property -dict {PACKAGE_PIN F17 IOSTANDARD LVCMOS33} [get_ports io_reset];  # PL_KEY0
+# do NOT assign reset to ANY BUTTON in Vivado 2020, its Utility Vector Logic Not cause unstable TX output
+# while this isn't present in Vivado 2022
+
 
 
 # UART ports
