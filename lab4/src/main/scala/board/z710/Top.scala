@@ -94,7 +94,7 @@ class Top(binaryFilename: String ="say_goodbye.asmbin") extends Module {
 
 
   
-  val clock_freq = 100_000_000.U
+  val clock_freq = 125_000_000.U
 
   val led_count = RegInit(0.U(32.W))
   when (led_count >= clock_freq) { // the led blinks every second, clock freq is 100M
