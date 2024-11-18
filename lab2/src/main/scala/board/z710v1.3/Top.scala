@@ -63,7 +63,11 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
-    cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
+    // cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
+
+    /* disable interrupt flag for now, some unexpected bugs in Zybo 7010 v1.3 board*/
+    cpu.io.interrupt_flag := 0.U
+
     cpu.io.csr_regs_debug_read_address := 0.U
     cpu.io.regs_debug_read_address := 0.U
     // cpu.io.debug_read_address := 0.U
