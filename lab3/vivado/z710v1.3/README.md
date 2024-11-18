@@ -78,7 +78,6 @@ vivado -mode batch -source ./program_device.tcl
 
 ## For Maintainers
 
-Zybo Z710 的时钟信号大抵不是 125MHz 而是 100MHz，因而 UART 模块使用的 frequency 参数要细调。
 本板子 Zynq7010 Soc 引了 PL 到 UART3，因此可以直连而不必通过 ARM 核心转发 UART 信号。但有以下需要注意的：
 
 - reset 信号在 Vivado 2020 中不要连接至 button 或使用 Utility Vector Logic 做 NOT 门，否则会导致乱码输出，原因未知，好像可以将 TX 输出连接到一个 ILA debug 模块使输出正常。在 Vivado 2022 中使用则无问题。

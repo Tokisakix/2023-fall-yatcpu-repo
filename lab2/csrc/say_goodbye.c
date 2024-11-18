@@ -16,8 +16,8 @@ void waste_some_time(int cycle) {
 int main() {
 
     // const char* s = "abcd";
-    const char* s = "Never gonna give you up~ Never gonna let you down~\n\
-    Never gonna run around and~ desert you~\n";
+    const char* s = "Never gonna give you up~ Never gonna let you down~\n"
+    "Never gonna run around and~ desert you~\n";
 
     while (1) {
       
