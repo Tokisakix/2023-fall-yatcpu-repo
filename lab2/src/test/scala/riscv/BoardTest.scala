@@ -1,25 +1,39 @@
-package riscv.singlecycle
-
-import board.basys3.BootStates
-import chisel3._
-import chiseltest._
-import org.scalatest.flatspec.AnyFlatSpec
-
-import riscv.{Parameters, TestAnnotations}
+package riscv
 
 import board.z710.Top
 
+import riscv.{Parameters, TestAnnotations}
+import chisel3._
+import chisel3.util.{is, switch}
+import chiseltest._
+import org.scalatest.flatspec.AnyFlatSpec
+import board.{z710, z710v1_3, verilator}
 
-class BoardSayGoodbyeTest extends  AnyFlatSpec with ChiselScalatestTester {
-  behavior of "Board Single"
-  it should "say goodbye" in {
-    test(new Top("say_goodbye.asmbin")).withAnnotations(Seq(VerilatorBackendAnnotation, WriteVcdAnnotation)) 
-    { c =>
-      for (i <- 1 to 200) {
-        c.clock.step(1000)
-        c.io.rx.poke((i % 2).B) // Avoid timeout
-      }
-    } 
+
+class Z710_SayGoodbyeTest extends AnyFlatSpec with ChiselScalatestTester {
+  behavior of "Z710 Board simulation"
+  it should "say goodbye " in {
+    test(new z710.Top("say_goodbye.asmbin")).withAnnotations(TestAnnotations.annos) { c => 
+      
+      for (i <- 1 to 50000) {
+        c.clock.step(5)
+        c.io.rx.poke((i % 2).U) // poke some useless value, since rx not yet used
+      }  
+    }
   }
 }
+
+class Z710v13_SayGoodbyeTest extends AnyFlatSpec with ChiselScalatestTester {
+  behavior of "Z710v1.3 Board simulation"
+  it should "say goodbye " in {
+    test(new z710v1_3.Top("say_goodbye.asmbin")).withAnnotations(TestAnnotations.annos) { c => 
+      
+      for (i <- 1 to 50000) {
+        c.clock.step(5)
+        c.io.rx.poke((i % 2).U) // poke some useless value, since rx not yet used
+      }  
+    }
+  }
+}
+
 
