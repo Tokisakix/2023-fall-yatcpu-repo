@@ -21,9 +21,9 @@
 
 
 module clock_control(
-    input clk_in,
+    input clock_in,
     input enable_clk,
-    output clk_out
+    output reg clock_out
     );
-    assign clk_out = clk_in & enable_clk;
+    assign clock_out = clock_in & enable_clk;
 endmodule
