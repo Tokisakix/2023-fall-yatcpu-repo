@@ -35,14 +35,14 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
-  // val timer = Module(new Timer)
+  val timer = Module(new Timer)
   val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200)) // 31M or 32M is good, 33M more error
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
   mem.io.bundle <> dummy.io.bundle
   mem.io.debug_read_address := 0.U
-  // timer.io.bundle <> dummy.io.bundle
+  timer.io.bundle <> dummy.io.bundle
   uart.io.bundle <> dummy.io.bundle
   io.tx := uart.io.txd
   uart.io.rxd := io.rx
@@ -63,10 +63,10 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
-    // cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
-    // cpu.io.csr_regs_debug_read_address := 0.U
-    // cpu.io.regs_debug_read_address := 0.U
-    cpu.io.debug_read_address := 0.U
+    cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
+    cpu.io.csr_regs_debug_read_address := 0.U
+    cpu.io.regs_debug_read_address := 0.U
+    // cpu.io.debug_read_address := 0.U
     // cpu.io.memory_bundle.read_data := 0.U
     cpu.io.instruction_valid := rom_loader.io.load_finished
     mem.io.instruction_address := cpu.io.instruction_address

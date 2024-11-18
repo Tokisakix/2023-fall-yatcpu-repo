@@ -10,7 +10,7 @@
 
 ##Clock signal
 set_property -dict {PACKAGE_PIN K17 IOSTANDARD LVCMOS33} [get_ports io_clock]
-create_clock -period 20.000 -name sys_clk_pin -waveform {0.000 10.000} -add [get_ports io_clock]
+create_clock -period 8.000 -name sys_clk_pin -waveform {0.000 4.000} -add [get_ports io_clock]
 
 
 
