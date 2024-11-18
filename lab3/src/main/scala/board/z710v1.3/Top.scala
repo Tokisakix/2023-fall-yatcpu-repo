@@ -97,7 +97,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
 object VerilogGenerator extends App {
   (new ChiselStage).execute(
-    Array("-X", "verilog", "-td", "verilog/z710"), 
+    Array("-X", "verilog", "-td", "verilog/z710v1.3"), 
     Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
   )
 }
