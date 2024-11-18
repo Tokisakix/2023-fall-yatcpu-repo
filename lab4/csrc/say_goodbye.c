@@ -32,10 +32,10 @@ int main() {
       {
         uart_send_char(*p);
         p++;
-        waste_some_time(100);
+        waste_some_time(200);
       }
 
-      waste_some_time(200);
+      waste_some_time(400);
 
       break;  // print once, but pressing CPU reset can print again
     }
