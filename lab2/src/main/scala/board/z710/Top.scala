@@ -28,11 +28,15 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
 
     val led = Output(Bool())  // z710 has few LEDs, use one for running indicator
   })
+
+  // original ref clock is 125MHz, divided in clock_control.v by 5 to avoid total negative slack too large
+  val clock_freq = 25_000_000 
+
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
   val timer = Module(new Timer)
-  val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200))
+  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200))
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
@@ -82,14 +86,13 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   }
 
   // LED, blinks every second
-  val clock_freq = 40_000_000.U
   val led_count = RegInit(0.U(32.W))
-  when (led_count >= clock_freq) {
+  when (led_count >= clock_freq.U) {
     led_count := 0.U
   }.otherwise {
     led_count := led_count + 1.U
   }
-  io.led := (led_count >= (clock_freq >> 1))
+  io.led := (led_count >= (clock_freq.U >> 1))
 
 
 
