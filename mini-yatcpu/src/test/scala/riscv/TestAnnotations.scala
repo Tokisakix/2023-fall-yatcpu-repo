@@ -48,5 +48,6 @@ object WriteVcdEnabler {
 }
 
 object TestAnnotations {
-  val annos = VerilatorEnabler.annos ++ WriteVcdEnabler.annos
+  // val annos = VerilatorEnabler.annos ++ WriteVcdEnabler.annos
+  val annos = Seq(VerilatorBackendAnnotation, WriteVcdAnnotation) // enable VCD write by default
 }
