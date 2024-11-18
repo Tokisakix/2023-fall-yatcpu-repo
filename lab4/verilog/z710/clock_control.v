@@ -23,7 +23,7 @@
 module clock_control(
     input clock_in,
     input enable_clk,
-    output reg clock_out
+    output clock_out
     );
     assign clock_out = clock_in & enable_clk;
 endmodule
