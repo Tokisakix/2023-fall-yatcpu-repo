@@ -22,12 +22,12 @@
 
 module clock_control(
     input clk_in,
-    input clk_enalbe,
+    input clk_enable,
     output clk_out
     );
     
     
     // original clock
-   assign clk_out = clk_in & clk_enalbe;
+   assign clk_out = clk_in & clk_enable;
     
 endmodule
