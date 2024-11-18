@@ -1,4 +1,4 @@
-package board.z710
+package board.z710v1_3
 
 
 import chisel3._
