@@ -32,7 +32,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
   val timer = Module(new Timer)
-  val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200)) // 31M or 32M is good, 33M more error
+  val uart = Module(new Uart(frequency = 32_000000, baudRate = 115200))
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle

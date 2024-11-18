@@ -37,7 +37,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   // val hdmi_display = Module(new HDMIDisplay)
   // val display = Module(new CharacterDisplay)
   // val timer = Module(new Timer)
-  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200)) // 31M or 32M is good, 33M more error
+  val uart = Module(new Uart(frequency = clock_freq, baudRate = 115200))
   val dummy = Module(new Dummy)
 
   // display.io.bundle <> dummy.io.bundle
@@ -58,7 +58,7 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   val CPU_clkdiv = RegInit(UInt(2.W),0.U)
   val CPU_tick = Wire(Bool())
   val CPU_next = Wire(UInt(2.W))
-  CPU_next := Mux(CPU_clkdiv === 9.U, 0.U, CPU_clkdiv + 1.U)
+  CPU_next := Mux(CPU_clkdiv === 3.U, 0.U, CPU_clkdiv + 1.U)
   CPU_tick := CPU_clkdiv === 0.U
   CPU_clkdiv := CPU_next
 

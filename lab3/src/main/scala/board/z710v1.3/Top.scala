@@ -19,17 +19,16 @@ import chisel3.stage.{ChiselGeneratorAnnotation, ChiselStage}
 import chisel3.util.Cat
 import peripheral._
 import riscv.Parameters
-import riscv.core.{CPU, ProgramCounter}
+import riscv.core.CPU
 
 class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   val io = IO(new Bundle() {
     val tx = Output(Bool())
     val rx = Input(Bool())
 
-    val led = Output(Bool())  // z710 has few LEDs, use one for running indicator
+    val led = Output(Bool())
   })
 
-  
   val clock_freq = 50_000_000
 
   val mem = Module(new Memory(Parameters.MemorySizeInWords))
@@ -64,32 +63,23 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   withClock(CPU_tick.asClock) {
     val cpu = Module(new CPU)
     cpu.io.interrupt_flag := Cat(uart.io.signal_interrupt, timer.io.signal_interrupt)
-    cpu.io.csr_regs_debug_read_address := 0.U
-    cpu.io.regs_debug_read_address := 0.U
-    // cpu.io.debug_read_address := 0.U
-    // cpu.io.memory_bundle.read_data := 0.U
     cpu.io.instruction_valid := rom_loader.io.load_finished
     mem.io.instruction_address := cpu.io.instruction_address
     cpu.io.instruction := mem.io.instruction
+    cpu.io.debug_read_address := 0.U
 
     when(!rom_loader.io.load_finished) {
       rom_loader.io.bundle <> mem.io.bundle
       cpu.io.memory_bundle.read_data := 0.U
     }.otherwise {
       rom_loader.io.bundle.read_data := 0.U
-      when(cpu.io.deviceSelect === 2.U) {
+      when(cpu.io.device_select === 4.U) {
+        cpu.io.memory_bundle <> timer.io.bundle
+      }.elsewhen(cpu.io.device_select === 2.U) { // deviceSelect = highest 3 bits of address, thus 0x4000_0000 is mapped to UART
         cpu.io.memory_bundle <> uart.io.bundle
       }.otherwise {
         cpu.io.memory_bundle <> mem.io.bundle
       }
-    }
-
-    when(!rom_loader.io.load_finished) {
-      rom_loader.io.bundle <> mem.io.bundle
-      cpu.io.memory_bundle.read_data := 0.U
-    }.otherwise {
-      rom_loader.io.bundle.read_data := 0.U
-      cpu.io.memory_bundle <> mem.io.bundle
     }
   }
 
@@ -103,12 +93,11 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
   io.led := (led_count >= (clock_freq.U >> 1))
 
 
-
 }
 
 object VerilogGenerator extends App {
   (new ChiselStage).execute(
-    Array("-X", "verilog", "-td", "verilog/z710v1.3"), 
+    Array("-X", "verilog", "-td", "verilog/z710"), 
     Seq(ChiselGeneratorAnnotation(() => new Top("say_goodbye.asmbin")))   // program to run on CPU
   )
 }
