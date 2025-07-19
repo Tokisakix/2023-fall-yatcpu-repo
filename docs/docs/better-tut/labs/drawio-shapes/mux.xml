@@ -1,0 +1,25 @@
+<shape name="mux" h="40" w="60" aspect="fixed" strokewidth="inherit">
+    <connections>
+        <constraint x="0" y="0.5" perimeter="1"/> <!-- control 1 -->
+        <constraint x="1" y="0.5" perimeter="1"/> <!-- control 2 -->
+
+    </connections>
+
+    <background>
+    <path>
+        <move x="20" y="0"/>
+        <arc rx="10" ry="10" x-axis-rotation="0" large-arc-flag="0" sweep-flag="0" x="20" y="40"/>
+        <line x="40" y="40"/>
+        <arc rx="10" ry="10" x-axis-rotation="0" large-arc-flag="0" sweep-flag="0" x="40" y="0"/>
+        <line x="20" y="0"/>
+
+    </path>
+    </background>
+    <foreground>
+        <!-- <fillstroke/> -->
+        <!-- <text str="ADD" x="30.0" y="45.0" align="center" valign="top" vertical="0" rotation="0.0" align-shape="1"/> -->
+        <stroke/>
+    </foreground>
+
+
+</shape>

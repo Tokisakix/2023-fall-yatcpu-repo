@@ -7,6 +7,39 @@ nav:
 - 如何一键环境配置: env.md
 - 如何一键烧板: board.md
 - 最终验收: test.md
+- better-tut/intro.md
+- 理论知识基础:
+  - better-tut/theory/cpu-arch.md
+  - better-tut/theory/riscv-isa.md
+  - better-tut/theory/interrupt-and-exception.md
+- 基础工程知识与技能:
+  - better-tut/practice/envvar-and-cmd.md
+  - better-tut/practice/scala-and-chisel.md
+- 实验:
+  - better-tut/labs/lab1/lab1-single-cycle-cpu.md
+  - better-tut/labs/lab2/lab2-interrupt.md
+
+
 
 theme:
   name: material
+  features:
+    - content.tabs.link
+    - navigation.expand
+
+
+markdown_extensions:
+  - toc:
+      permalink: "🚁"
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
+  - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
+  - tables
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true

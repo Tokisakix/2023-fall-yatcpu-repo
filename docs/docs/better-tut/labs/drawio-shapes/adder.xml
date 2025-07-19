@@ -1,0 +1,26 @@
+<shape name="adder" h="100" w="50" aspect="fixed" strokewidth="inherit">
+    <connections>
+        <constraint x="0" y="0.2"  perimeter="1"/> <!-- op up -->
+        <constraint x="0" y="0.8"  perimeter="1"/> <!-- op down -->
+        <constraint x="1" y="0.50"  perimeter="1"/> <!-- op result -->
+    </connections>
+    <background>
+    
+    <path>
+        <move x="0" y="0"/>
+        <line x="50" y="40"/>
+        <line x="50" y="60"/>
+        <line x="0" y="100"/>
+        <line x="0" y="60"/>
+        <line x="15" y="50"/>
+        <line x="0" y="40"/>
+        <line x="0" y="0"/>
+        <close/>
+    </path>
+    </background>
+    <foreground>
+        <fillstroke/>
+        <!-- <text str="ADD" x="30.0" y="45.0" align="center" valign="top" vertical="0" rotation="0.0" align-shape="1"/> -->
+        <stroke/>
+    </foreground>
+</shape>
