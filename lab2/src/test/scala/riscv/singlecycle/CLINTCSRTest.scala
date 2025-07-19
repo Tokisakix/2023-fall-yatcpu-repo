@@ -18,7 +18,8 @@ import chisel3._
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
 import riscv.{Parameters, TestAnnotations}
-import riscv.core.{ALUOp1Source, ALUOp2Source, CLINT, CSR, CSRRegister, InstructionDecode, InstructionsNop, InstructionsRet}
+import riscv.core.{ALUOp1Source, ALUOp2Source, CLINT, CSR, CSRRegister, InstructionDecode, InstructionsNop, InstructionsRet, InstructionsEnv}
+import riscv.core.InterruptCode
 
 class CLINTCSRTestTopModule extends Module {
   val io = IO( new Bundle{
@@ -63,10 +64,9 @@ class CLINTCSRTestTopModule extends Module {
 
 class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
   behavior of "CLINTCSRTest of Single Cycle CPU"
-  it should "process " in {
+  it should "handle external interrupt" in {
     test(new CLINTCSRTestTopModule).withAnnotations(TestAnnotations.annos) { c =>
 
-      //
       c.io.jump_flag.poke(false.B)
       c.io.csr_regs_write_enable.poke(false.B)
       c.io.interrupt_flag.poke(0.U)
@@ -79,15 +79,18 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.csr_regs_write_data.poke(0x1888L.U)
       c.clock.step()
       c.io.csr_regs_write_enable.poke(false.B)
-      //handle interrupt when not jumping
+
+
+      // handle interrupt when not jumping
       c.io.jump_flag.poke(false.B)
       c.io.instruction_address.poke(0x1900L.U)
       c.io.instruction.poke(InstructionsNop.nop)
-      c.io.interrupt_flag.poke(1.U)
+      c.io.interrupt_flag.poke(InterruptCode.Timer0)
+      
       c.io.interrupt_assert.expect(true.B)
       c.io.interrupt_handler_address.expect(0x1144L.U)
       c.clock.step()
-      c.io.interrupt_flag.poke(0.U)
+      c.io.interrupt_flag.poke(InterruptCode.None)
       c.io.csr_regs_debug_read_address.poke(CSRRegister.MEPC)
       c.io.csr_regs_debug_read_data.expect(0x1904L.U)
       c.io.csr_regs_debug_read_address.poke(CSRRegister.MCAUSE)
@@ -97,7 +100,7 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
 
       c.clock.step(25)
 
-      //mret from interrupt handler
+      // mret from interrupt handler
       c.io.instruction.poke(InstructionsRet.mret)
       c.io.interrupt_assert.expect(true.B)
       c.io.interrupt_handler_address.expect(0x1904L.U)
@@ -105,14 +108,14 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.csr_regs_debug_read_address.poke(CSRRegister.MSTATUS)
       c.io.csr_regs_debug_read_data.expect(0x1888L.U)
 
-      //handle interrupt when jumping
+      // handle interrupt when jumping
       c.io.jump_flag.poke(true.B)
       c.io.jump_address.poke(0x1990L.U)
       c.io.interrupt_flag.poke(2.U)
       c.io.interrupt_assert.expect(true.B)
       c.io.interrupt_handler_address.expect(0x1144L.U)
       c.clock.step()
-      c.io.interrupt_flag.poke(0.U)
+      c.io.interrupt_flag.poke(InterruptCode.None)
       c.io.csr_regs_debug_read_address.poke(CSRRegister.MEPC)
       c.io.csr_regs_debug_read_data.expect(0x1990L.U)
       c.io.csr_regs_debug_read_address.poke(CSRRegister.MCAUSE)
@@ -122,7 +125,7 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
 
       c.clock.step(25)
 
-      //mret from interrupt handler
+      // mret from interrupt handler
       c.io.instruction.poke(InstructionsRet.mret)
       c.io.interrupt_assert.expect(true.B)
       c.io.interrupt_handler_address.expect(0x1990L.U)
@@ -131,7 +134,7 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.csr_regs_debug_read_data.expect(0x1888L.U)
       c.io.instruction.poke(InstructionsNop.nop)
 
-      //don't handle interrupt under certain situation
+      // don't handle interrupt under certain situation
       c.io.csr_regs_write_enable.poke(true.B)
       c.io.csr_regs_write_address.poke(CSRRegister.MSTATUS)
       c.io.csr_regs_write_data.poke(0x1880L.U)
@@ -139,4 +142,60 @@ class CLINTCSRTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.interrupt_assert.expect(false.B)
     }
   }
+
+
+
+  it should "handle environmental instructions" in {
+    test(new CLINTCSRTestTopModule).withAnnotations(TestAnnotations.annos) { c =>
+      val interrupt_entry = 0x1144L.U
+
+      c.io.jump_flag.poke(false.B)
+      c.io.csr_regs_write_enable.poke(true.B)
+      c.io.csr_regs_write_address.poke(CSRRegister.MSTATUS)
+      c.io.csr_regs_write_data.poke(0x1888L.U)  // write mstatus MIE = 1, MPIE = 1
+      c.clock.step()
+      c.io.csr_regs_write_address.poke(CSRRegister.MTVEC)
+      c.io.csr_regs_write_data.poke(interrupt_entry)  // write mtvec to 0x1144
+      c.clock.step()
+      c.io.csr_regs_write_enable.poke(false.B)
+
+      // ecall
+      c.io.instruction.poke(InstructionsEnv.ecall)
+      c.io.instruction_address.poke(0x2000L.U)
+      c.io.interrupt_flag.poke(InterruptCode.None)
+      c.clock.step()  // poking ecall instruction at address 0x2000, expect CLINT to handle it
+
+      c.io.interrupt_assert.expect(true.B)
+      c.io.interrupt_handler_address.expect(interrupt_entry)
+
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MEPC)
+      c.io.csr_regs_debug_read_data.expect(0x2004L.U)
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MCAUSE)
+      c.io.csr_regs_debug_read_data.expect(0x0000_000BL.U) // ecall from M-mode
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MSTATUS)
+      c.io.csr_regs_debug_read_data.expect(0x1880L.U)
+
+      // mret from ecall handler
+      c.io.instruction.poke(InstructionsRet.mret)
+      c.io.interrupt_assert.expect(true.B)
+      c.io.interrupt_handler_address.expect(0x2004L.U)
+      c.clock.step()
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MSTATUS)
+      c.io.csr_regs_debug_read_data.expect(0x1888L.U) 
+
+      // ebreak
+      c.clock.step()
+      c.io.instruction.poke(InstructionsEnv.ebreak)
+      c.io.instruction_address.poke(0x2004L.U)
+      c.clock.step()
+
+      c.io.interrupt_assert.expect(true.B)
+      c.io.interrupt_handler_address.expect(interrupt_entry)
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MEPC)
+      c.io.csr_regs_debug_read_data.expect(0x2008L.U)
+      c.io.csr_regs_debug_read_address.poke(CSRRegister.MCAUSE)
+      c.io.csr_regs_debug_read_data.expect(0x0000_0003L.U) // breakpoint
+    }
+  }
+
 }

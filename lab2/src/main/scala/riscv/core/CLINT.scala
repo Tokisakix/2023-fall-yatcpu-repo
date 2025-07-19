@@ -18,7 +18,7 @@ import chisel3._
 import chisel3.util.MuxLookup
 import riscv.Parameters
 
-object InterruptStatus {
+object InterruptCode {
   val None = 0x0.U(8.W)
   val Timer0 = 0x1.U(8.W)
   val Ret = 0xFF.U(8.W)
@@ -28,18 +28,6 @@ object InterruptEntry {
   val Timer0 = 0x4.U(8.W)
 }
 
-object InterruptState {
-  val Idle = 0x0.U
-  val SyncAssert = 0x1.U
-  val AsyncAssert = 0x2.U
-  val MRET = 0x3.U
-}
-
-object CSRState {
-  val Idle = 0x0.U
-  val Traping = 0x1.U
-  val Mret = 0x2.U
-}
 
 class CSRDirectAccessBundle extends Bundle {
   val mstatus = Input(UInt(Parameters.DataWidth))
@@ -88,20 +76,14 @@ class CLINT extends Module {
     io.csr_bundle.direct_write_enable :=
     io.interrupt_assert :=
     io.interrupt_handler_address :=
-  }.elsewhen(io.instruction === InstructionsRet.mret) {
-    io.csr_bundle.mstatus_write_data :=
-    io.csr_bundle.mepc_write_data :=
-    io.csr_bundle.mcause_write_data :=
-    io.csr_bundle.direct_write_enable :=
-    io.interrupt_assert :=
-    io.interrupt_handler_address :=
+  }
+  .elsewhen(io.instruction === InstructionsEnv.ebreak || io.instruction === InstructionsEnv.ecall) {
+    ......
+  }
+  .elsewhen(io.instruction === InstructionsRet.mret) {
+    ......
   }.otherwise {
-    io.csr_bundle.mstatus_write_data :=
-    io.csr_bundle.mepc_write_data :=
-    io.csr_bundle.mcause_write_data :=
-    io.csr_bundle.direct_write_enable :=
-    io.interrupt_assert :=
-    io.interrupt_handler_address :=
+    ......
   }
    */
 }
