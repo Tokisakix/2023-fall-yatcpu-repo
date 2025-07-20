@@ -13,4 +13,4 @@ target
 .Xil
 
 # autoans
-misc/lab2_ans.yaml
+misc/lab*_ans.yaml
