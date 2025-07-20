@@ -11,3 +11,6 @@ target
 **/hello_z710-test
 **/riscv-z710-v2020
 .Xil
+
+# autoans
+misc/lab2_ans.yaml
