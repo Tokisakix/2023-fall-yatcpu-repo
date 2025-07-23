@@ -160,6 +160,12 @@ Timer 的代码位于 `src/main/scala/riscv/peripheral/Timer.scala`
 
 <!-- 如果能够正确完成本次实验，那么你的 CPU 就可以运行更加复杂的程序了，可以运行一下俄罗斯方块程序试试，如果想要上手玩的话，也许需要一个串口转接板，这样就可以通过电脑的键盘通过 UART 串口给程序输入字符了。 -->
 
+
+## CPU架构图
+
+![](assets/single_cycle_cpu_zicsr.drawio.svg)
+
+
 ***
 
 ## 实验报告
@@ -173,6 +179,3 @@ Timer 的代码位于 `src/main/scala/riscv/peripheral/Timer.scala`
       2. 在测试波形图上找出说明该程序成功执行的信号。
 3. 说明您在完成实验的过程中，遇到的实验指导不足或改进建议。
 
-## CPU架构图
-
-![](images/single_cycle_CPU_with_interrupt_support.png)
