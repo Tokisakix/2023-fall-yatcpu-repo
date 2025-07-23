@@ -72,7 +72,7 @@ class Execute extends Module {
     )
   io.if_jump_address := io.immediate + Mux(opcode === Instructions.jalr, io.reg1_data, io.instruction_address)
   io.mem_alu_result := alu.io.result
-  // lab2(CLINTCSR)
+  //lab2(CLINTCSR)
   /*
   io.csr_reg_write_data :=
   */

@@ -1,0 +1,43 @@
+# Example configuration file for code insertion
+# Format: target_file -> operations
+
+files:
+  # Example target file 1
+  "src/main/scala/MyModule.scala":
+    imports:
+      - "import chisel3.util._"
+      - "import chisel3.experimental._"
+    
+    anchors:
+      "// INSERT_REGISTERS_HERE":
+        code: |
+          val regA = RegInit(0.U(32.W))
+          val regB = RegInit(0.U(32.W))
+          val counter = RegInit(0.U(8.W))
+        
+      "// INSERT_LOGIC_HERE":
+        code: |
+          when(io.enable) {
+            regA := io.dataIn
+            counter := counter + 1.U
+          }.otherwise {
+            regA := 0.U
+          }
+
+  # Example target file 2  
+  "src/test/scala/MyModuleTest.scala":
+    imports:
+      - "import chiseltest._"
+      - "import org.scalatest.flatspec.AnyFlatSpec"
+    
+    anchors:
+      "// INSERT_TEST_CASE":
+        code: |
+          it should "handle basic operations" in {
+            test(new MyModule) { dut =>
+              dut.io.enable.poke(true.B)
+              dut.io.dataIn.poke(42.U)
+              dut.clock.step()
+              dut.io.dataOut.expect(42.U)
+            }
+          }
