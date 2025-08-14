@@ -19,7 +19,7 @@ class Memory {
   uint32_t read(size_t address) {
     address = address / 4;
     if (address >= memory.size()) {
-//      printf("invalid read address 0x%08x\n", address * 4);
+      printf("invalid read address 0x%08x\n", address * 4);
       return 0;
     }
 
@@ -29,8 +29,8 @@ class Memory {
   uint32_t readInst(size_t address) {
 	  address = address / 4;
 	  if (address >= memory.size()) {
-//		printf("invalid read Inst address 0x%08x\n", address * 4);
-		return 0;
+      printf("invalid read Inst address 0x%08x\n", address * 4);
+      return 0;
 	  }
 
 	 return memory[address];
@@ -44,7 +44,7 @@ class Memory {
     if (write_strobe[2]) write_mask |= 0x00FF0000;
     if (write_strobe[3]) write_mask |= 0xFF000000;
     if (address >= memory.size()) {
-//      printf("invalid write address 0x%08x\n", address * 4);
+      printf("invalid write address 0x%08x\n", address * 4);
       return;
     }
     memory[address] = (memory[address] & ~write_mask) | (value & write_mask);
@@ -133,12 +133,12 @@ class Simulator {
 
     if (auto it = std::find(args.begin(), args.end(), "-memory");
         it != args.end()) {
-      memory_words = std::stoul(*(it + 1));
+      memory_words = std::stoull(*(it + 1));
     }
 
     if (auto it = std::find(args.begin(), args.end(), "-time");
         it != args.end()) {
-      max_sim_time = std::stoul(*(it + 1));
+      max_sim_time = std::stoull(*(it + 1));
     }
 
     if (auto it = std::find(args.begin(), args.end(), "-vcd");
@@ -179,9 +179,10 @@ class Simulator {
     uint32_t data_memory_read_word = 0;
     uint32_t inst_memory_read_word = 0;
     uint32_t timer_interrupt = 0;
-	uint32_t counter = 0;
-	uint32_t clocktime = 1;
+    uint32_t counter = 0;
+    uint32_t clocktime = 1;
     bool memory_write_strobe[4] = {false};
+    int uart_write_time_counter = 0, uart_write_time_limit = 4; // every limit, an UART write completes; this is tricky part
     while (main_time < max_sim_time && !Verilated::gotFinish()) {
       ++main_time;
       ++counter;
@@ -192,17 +193,23 @@ class Simulator {
       if (main_time > 2) {
         top->reset = 0;
       }
-//      top->io_mem_slave_read_data = memory_read_word;
+      // top->io_mem_slave_read_data = memory_read_word;
       top->io_memory_bundle_read_data = data_memory_read_word;
       top->io_instruction = inst_memory_read_word;
       top->clock = !top->clock;
       top->eval();
       top->io_interrupt_flag = 0;
 
-	  data_memory_read_word = memory->read(top->io_memory_bundle_address);
+      if (top->io_deviceSelect == 2 && top->io_memory_bundle_write_enable) {
+        if (uart_write_time_counter == 0) std::cout << (char)top->io_memory_bundle_write_data << std::flush;  // Output to UART
+        uart_write_time_counter = (uart_write_time_counter + 1) % uart_write_time_limit;
+      }
+      else {
+        uart_write_time_counter = 0;
+      }
 
-
-	  inst_memory_read_word = memory->readInst(top->io_instruction_address);
+      data_memory_read_word = memory->read(top->io_memory_bundle_address);
+      inst_memory_read_word = memory->readInst(top->io_instruction_address);
 
       if (top->io_memory_bundle_write_enable) {
         memory_write_strobe[0] = top->io_memory_bundle_write_strobe_0;
@@ -217,6 +224,11 @@ class Simulator {
         if (memory->read(halt_address) == 0xBABECAFE) {
           break;
         }
+      }
+
+      // print simulation progress in percentage every 1%
+      if (main_time % (max_sim_time / 100) == 0) {
+        std::cout << "Simulation progress: " << (main_time * 100 / max_sim_time) << "%" << std::endl;
       }
     }
 

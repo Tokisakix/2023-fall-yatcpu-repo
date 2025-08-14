@@ -25,16 +25,16 @@ class Control extends Module {
     val memory_read_enable_ex = Input(Bool())
     val rd_ex = Input(UInt(Parameters.PhysicalRegisterAddrWidth))
 
-    val if_flush = Output(Bool())
-    val id_flush = Output(Bool())
+    val if2id_flush = Output(Bool())
+    val id2ex_flush = Output(Bool())
     val pc_stall = Output(Bool())
-    val if_stall = Output(Bool())
+    val if2id_stall = Output(Bool())
   })
 
   // Lab3(Forward)
-  io.if_flush := false.B
-  io.id_flush := false.B
+  io.if2id_flush := false.B
+  io.id2ex_flush := false.B
   io.pc_stall := false.B
-  io.if_stall := false.B
+  io.if2id_stall := false.B
   // Lab3(Forward) End
 }

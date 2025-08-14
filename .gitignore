@@ -2,6 +2,10 @@ target
 .vscode
 .metals
 .bloop
+**/project/metals.sbt
+**/project/project
+
+# VCD output
 **/test_run_dir
 
 # vivado stuffs

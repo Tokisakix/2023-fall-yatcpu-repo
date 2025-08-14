@@ -121,12 +121,12 @@ class Simulator {
 
     if (auto it = std::find(args.begin(), args.end(), "-memory");
         it != args.end()) {
-      memory_words = std::stoul(*(it + 1));
+      memory_words = std::stoull(*(it + 1));
     }
 
     if (auto it = std::find(args.begin(), args.end(), "-time");
         it != args.end()) {
-      max_sim_time = std::stoul(*(it + 1));
+      max_sim_time = std::stoull(*(it + 1));
     }
 
     if (auto it = std::find(args.begin(), args.end(), "-vcd");

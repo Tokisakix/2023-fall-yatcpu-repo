@@ -82,6 +82,11 @@ class Top(binaryFilename: String = "say_goodbye.asmbin") extends Module {
         cpu.io.memory_bundle <> mem.io.bundle
       }
     }
+
+    when (uart.io.bundle.write_enable) {
+      val the_char = cpu.io.memory_bundle.write_data(7, 0)
+      printf(cf"${the_char.asUInt}%c")
+    }
   }
 
   // LED, blinks every second

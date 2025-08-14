@@ -71,3 +71,4 @@ class FiveStageCPUForwardTest extends AnyFlatSpec with ChiselScalatestTester {
     }
   }
 }
+

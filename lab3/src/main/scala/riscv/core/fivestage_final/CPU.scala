@@ -61,8 +61,8 @@ class CPU extends Module {
   inst_fetch.io.rom_instruction := io.instruction
   inst_fetch.io.instruction_valid := io.instruction_valid
 
-  if2id.io.stall := ctrl.io.if_stall
-  if2id.io.flush := ctrl.io.if_flush
+  if2id.io.stall := ctrl.io.if2id_stall
+  if2id.io.flush := ctrl.io.if2id_flush
   if2id.io.instruction := inst_fetch.io.id_instruction
   if2id.io.instruction_address := inst_fetch.io.instruction_address
   if2id.io.interrupt_flag := io.interrupt_flag
@@ -78,7 +78,7 @@ class CPU extends Module {
   id.io.interrupt_assert := clint.io.id_interrupt_assert
   id.io.interrupt_handler_address := clint.io.id_interrupt_handler_address
 
-  id2ex.io.flush := ctrl.io.id_flush
+  id2ex.io.flush := ctrl.io.id2ex_flush
   id2ex.io.instruction := if2id.io.output_instruction
   id2ex.io.instruction_address := if2id.io.output_instruction_address
   id2ex.io.reg1_data := regs.io.read_data1

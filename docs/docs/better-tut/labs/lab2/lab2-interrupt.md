@@ -151,7 +151,7 @@ CSR 寄存器组的代码文件位于 `src/main/scala/riscv/core/CSR.scala`
 
 CLINT 的代码文件位于 `src/main/scala/riscv/core/CLINT.scala`
 
-Timer 的代码位于 `src/main/scala/riscv/peripheral/Timer.scala`
+Timer 的代码位于 `src/main/scala/peripheral/Timer.scala`
 
 !!! tip
       IDEA 可以双击 shift，vscode 可以 shift+P 以打开文件快速搜索面板。
@@ -173,7 +173,7 @@ Timer 的代码位于 `src/main/scala/riscv/peripheral/Timer.scala`
 
 1. `CLINTCSRTest.scala` 中添加了 CLINT 处理硬件终端和软件中断的两个测试，请您选择至少一个，并：
       1. 简述这个测试通过给部件输入什么信号，以测试 CLINT 的哪些功能？
-      2. 在测试波形图上，找到一次从开始处理中断到中断处理完成的波形图，并挑选其中关键的信号说明其过程。例如硬件中断的测试中，有在跳转指令和非跳转指令下的两次中断处理测试；软件测试则分别测试了 `ecall` 和 `ebreak` 两次中断，选择其中一次即可。
+      2. 在测试波形图上，找到一次从开始处理中断到中断处理完成的波形图，并挑选其中关键的信号说明其过程。例如硬件中断的测试中，有在跳转指令和非跳转指令下的两次中断处理测试；软件中断则分别测试了 `ecall` 和 `ebreak` 两次中断，选择其中一次即可。
 2. `CPUTest.scala` 中新增了 `SimpleTrapTest`，其执行 `csrc/simpletest.c` 的程序。请您：
       1. 简述该测试程序如何测试 CPU 的中断处理正确性。
       2. 在测试波形图上找出说明该程序成功执行的信号。

@@ -24,17 +24,17 @@ class Top extends Module {
   val io = IO(new CPUBundle)
 
   val cpu = Module(new CPU)
-
-  io.deviceSelect := 0.U
   cpu.io.debug_read_address := io.debug_read_address
   io.debug_read_data := cpu.io.debug_read_data
 
+  // intercept UART signals
+  io.deviceSelect := cpu.io.deviceSelect
+
+  // CPU instruction input is controlled by external codes
   io.memory_bundle <> cpu.io.memory_bundle
   io.instruction_address := cpu.io.instruction_address
   cpu.io.instruction := io.instruction
-
   cpu.io.instruction_valid := io.instruction_valid
-
 }
 
 object VerilogGenerator extends App {
