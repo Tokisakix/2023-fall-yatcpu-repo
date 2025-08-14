@@ -156,10 +156,10 @@ class InstructionDecode extends Module {
   val rs1 = io.instruction(19, 15)
   val rs2 = io.instruction(24, 20)
 
-  // Lab3(Forwarding) ID rs
+  // Lab3(Forward) ID rs
   io.regs_reg1_read_address := rs1
   io.regs_reg2_read_address := rs2
-  // Lab3(Forwarding) ID rs End
+  // Lab3(Forward) ID rs End
   io.ex_immediate := MuxLookup(
     opcode,
     Cat(Fill(20, io.instruction(31)), io.instruction(31, 20)),
@@ -196,10 +196,10 @@ class InstructionDecode extends Module {
       Instructions.jalr -> RegWriteSource.NextInstructionAddress
     )
   )
-  // Lab3(Forwarding) ID rd
+  // Lab3(Forward) ID rd
   io.ex_reg_write_enable := false.B
   io.ex_reg_write_address := rd
-  // Lab3(Forwarding) ID rd End
+  // Lab3(Forward) ID rd End
   io.ex_csr_address := io.instruction(31, 20)
   io.ex_csr_write_enable := (opcode === Instructions.csr) && (
     funct3 === InstructionsTypeCSR.csrrw || funct3 === InstructionsTypeCSR.csrrwi ||

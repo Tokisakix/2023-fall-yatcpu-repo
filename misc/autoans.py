@@ -143,6 +143,48 @@ class CodeFiller:
         
         return new_lines
     
+    def _replace_between_anchors(self, lines: List[str], begin_anchor: str, end_anchor: str, code: str) -> List[str]:
+        """
+        Replace the contents between begin_anchor and end_anchor with the given code.
+        Preserves indentation of the begin_anchor.
+        Raises ValueError if anchors are not found or in wrong order.
+        """
+        begin_idx = end_idx = None
+        anchor_indent = ""
+        for i, line in enumerate(lines):
+            if begin_anchor.strip() in line.strip():
+                begin_idx = i
+                # Extract indentation from the begin anchor line
+                for char in line:
+                    if char in [' ', '\t']:
+                        anchor_indent += char
+                    else:
+                        break
+            if end_anchor.strip() in line.strip():
+                end_idx = i
+                break
+        if begin_idx is None:
+            raise ValueError(f"Begin anchor '{begin_anchor}' not found in file")
+        if end_idx is None:
+            raise ValueError(f"End anchor '{end_anchor}' not found in file")
+        if end_idx <= begin_idx:
+            raise ValueError(f"End anchor '{end_anchor}' found before begin anchor '{begin_anchor}'")
+        
+        # Build new lines
+        new_lines = lines[:begin_idx+1]
+        code_lines = code.strip().split('\n')
+        for code_line in code_lines:
+            if code_line.strip():
+                indented_line = anchor_indent + code_line
+            else:
+                indented_line = code_line
+            new_lines.append(indented_line + '\n')
+        new_lines.extend(lines[end_idx:])
+        
+        print(f"    Replaced code between anchors: {begin_anchor.strip()} ... {end_anchor.strip()}")
+        
+        return new_lines
+    
     def _process_file(self, target_file: str, operations: Dict) -> None:
         """
         Process a single target file with the specified operations.
@@ -174,10 +216,17 @@ class CodeFiller:
         if 'imports' in operations and operations['imports']:
             modified_lines = self._add_imports(modified_lines, operations['imports'])
         
-        # Process anchor insertions
+        # Process anchor insertions and replacements
         if 'anchors' in operations and operations['anchors']:
             for anchor, config in operations['anchors'].items():
-                if 'code' in config:
+                if 'code' in config and 'end_anchor' in config:
+                    try:
+                        modified_lines = self._replace_between_anchors(
+                            modified_lines, anchor, config['end_anchor'], config['code']
+                        )
+                    except ValueError as e:
+                        raise ValueError(f"Failed to process file '{target_file}': {e}") from e
+                elif 'code' in config:
                     try:
                         modified_lines = self._insert_after_anchor(
                             modified_lines, anchor, config['code']

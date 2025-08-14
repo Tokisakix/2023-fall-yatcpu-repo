@@ -32,6 +32,7 @@ files:
     
     anchors:
       "// INSERT_TEST_CASE":
+        end_anchor: "// END_TEST_CASE"
         code: |
           it should "handle basic operations" in {
             test(new MyModule) { dut =>

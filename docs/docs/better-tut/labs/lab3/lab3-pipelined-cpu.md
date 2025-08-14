@@ -164,9 +164,7 @@
 
 !!! note "实验任务：缩短分支延迟"
 
-    `InstructionDecode`中的实现与五级阻塞流水线CPU基本一致，你可以复制前面填好的内容。
-
-    我们已经为你定义好相关模块的接口并移除了 `Execute` 模块中分支和跳转的相关代码，请你修改 `src/main/scala/riscv/core/fivestage_final/InstructionDecode.scala`、`src/main/scala/riscv/core/fivestage_final/Control.scala` 和  `src/main/scala/riscv/core/fivestage_final/Forwarding.scala` 中 `// Lab3(Final)` 处的代码，使其能够通过 `FiveStageCPUFinal` 测试。你可以复制上道题中相应代码并作修改。
+    我们已经为你定义好相关模块的接口并移除了 `Execute` 模块中分支和跳转的相关代码，请你修改 `src/main/scala/riscv/core/fivestage_final` 下的 `InstructionDecode.scala`、`Control.scala` 和  `Forwarding.scala` 中 `// Lab3(Final)` 处的代码，使其能够通过 `FiveStageCPUFinal` 测试。你可以复制上道题中相应代码并作修改。
 
 
 ### 提示：如何有效 debug
