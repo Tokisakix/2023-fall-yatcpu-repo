@@ -115,7 +115,7 @@
 
     我们在 `src/main/scala/riscv/core/fivestage_stall/InstructionDecode.scala` 中留下了相应接口，请根据上述约定使 ID 输出合适的寄存器地址，以供后续冒险分析。完成后应能通过 `DecoderStallTest` 测试。
 
-    我们用一个控制单元来检测并解决控制冒险和数据冒险，模块接口已经定义在 `src/main/scala/riscv/core/fivestage_stall/Control.scala`，请根据以上分析，修改 `// Lab3(Stall)` 处的代码，使其能够通过 `FiveStageCPUStallTest` 测试。
+    我们用一个控制单元来检测并解决控制冒险和数据冒险，模块接口已经定义在 `src/main/scala/riscv/core/fivestage_stall/Control.scala`，请根据以上分析，修改 `// Lab3(ThreeStage)` 处的代码，使其能够通过 `FiveStageCPUStallTest` 测试。
 
 
 

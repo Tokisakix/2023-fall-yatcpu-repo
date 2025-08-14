@@ -205,7 +205,7 @@ class Simulator {
       top->eval();
       top->io_interrupt_flag = 0;
 
-      if (top->io_deviceSelect == 2 && top->io_memory_bundle_write_enable) {
+      if (top->io_device_select == 2 && top->io_memory_bundle_write_enable) {
         if (uart_write_time_counter == 0) std::cout << (char)top->io_memory_bundle_write_data << std::flush;  // Output to UART
         uart_write_time_counter = (uart_write_time_counter + 1) % uart_write_time_limit;
       }
