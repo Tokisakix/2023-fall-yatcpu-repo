@@ -31,10 +31,10 @@ class CPU extends Module {
   val clint = Module(new CLINT)
   val csr_regs = Module(new CSR)
 
-  // Lab3(Flush)
+  // Lab3(ThreeStage)
   if2id.io.flush := false.B
   id2ex.io.flush := false.B
-  // Lab3(Flush) End
+  // Lab3(ThreeStage) End
 
   regs.io.write_enable := id2ex.io.output_regs_write_enable
   regs.io.write_address := id2ex.io.output_regs_write_address

@@ -17,5 +17,6 @@ package riscv.core.threestage
 import chisel3._
 
 class Control extends Module {
-  // Lab3(Flush)
+  // Lab3(ThreeStage)
+  // Lab3(ThreeStage) End
 }

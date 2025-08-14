@@ -152,7 +152,7 @@ class CodeFiller:
         begin_idx = end_idx = None
         anchor_indent = ""
         for i, line in enumerate(lines):
-            if begin_anchor.strip() in line.strip():
+            if begin_anchor.strip() == line.strip():
                 begin_idx = i
                 # Extract indentation from the begin anchor line
                 for char in line:
@@ -160,7 +160,7 @@ class CodeFiller:
                         anchor_indent += char
                     else:
                         break
-            if end_anchor.strip() in line.strip():
+            if end_anchor.strip() == line.strip():
                 end_idx = i
                 break
         if begin_idx is None:
@@ -168,7 +168,7 @@ class CodeFiller:
         if end_idx is None:
             raise ValueError(f"End anchor '{end_anchor}' not found in file")
         if end_idx <= begin_idx:
-            raise ValueError(f"End anchor '{end_anchor}' found before begin anchor '{begin_anchor}'")
+            raise ValueError(f"End anchor '{end_anchor}' @ {end_idx=} found before begin anchor '{begin_anchor} @ {begin_idx=}'")
         
         # Build new lines
         new_lines = lines[:begin_idx+1]
@@ -198,10 +198,7 @@ class CodeFiller:
         
         # Check if file exists
         if not file_path.exists():
-            print(f"  Warning: Target file does not exist, creating new file")
-            file_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(file_path, 'w', encoding='utf-8') as f:
-                f.write('')
+            raise FileNotFoundError(f"Target file '{file_path}' does not exist")
         
         # Create backup
         self._backup_file(file_path)
