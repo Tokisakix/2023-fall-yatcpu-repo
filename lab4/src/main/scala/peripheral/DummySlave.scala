@@ -18,15 +18,19 @@ import bus.{AXI4LiteChannels, AXI4LiteSlave}
 import chisel3._
 import riscv.Parameters
 
-// A dummy AXI4 slave that only returns 0 on read
-// and ignores all writes
+// A dummy AXI4 slave that doesn't respond to anything
 class DummySlave extends Module {
   val io = IO(new Bundle {
     val channels = Flipped(new AXI4LiteChannels(4, Parameters.DataBits))
   })
 
-  val slave = Module(new AXI4LiteSlave(Parameters.AddrBits, Parameters.DataBits))
-  slave.io.channels <> io.channels
-  slave.io.bundle.read_valid := true.B
-  slave.io.bundle.read_data := 0xDEADBEEFL.U
+  io.channels.read_address_channel.ARREADY := false.B
+  io.channels.read_data_channel.RVALID := false.B
+  io.channels.read_data_channel.RDATA := 0.U
+  io.channels.read_data_channel.RRESP := 0.U
+
+  io.channels.write_address_channel.AWREADY := false.B
+  io.channels.write_data_channel.WREADY := false.B
+  io.channels.write_response_channel.BVALID := false.B
+  io.channels.write_response_channel.BRESP := 0.U
 }

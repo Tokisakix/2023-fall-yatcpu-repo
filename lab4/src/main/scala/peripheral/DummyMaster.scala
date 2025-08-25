@@ -23,11 +23,17 @@ class DummyMaster extends Module {
   val io = IO(new Bundle {
     val channels = new AXI4LiteChannels(Parameters.AddrBits, Parameters.DataBits)
   })
-  val master = Module(new AXI4LiteMaster(Parameters.AddrBits, Parameters.DataBits))
-  master.io.channels <> io.channels
-  master.io.bundle.write_strobe := VecInit(Seq.fill(Parameters.WordSize)(false.B))
-  master.io.bundle.write_data := 0.U
-  master.io.bundle.write := false.B
-  master.io.bundle.read := false.B
-  master.io.bundle.address := 0.U
+  // NOTE: not using AXI4LiteMaster to save resources
+  io.channels.read_address_channel.ARVALID := false.B
+  io.channels.read_address_channel.ARADDR := 0.U
+  io.channels.read_address_channel.ARPROT := 0.U
+  io.channels.read_data_channel.RREADY := false.B
+
+  io.channels.write_address_channel.AWVALID := false.B
+  io.channels.write_address_channel.AWADDR := 0.U
+  io.channels.write_address_channel.AWPROT := 0.U
+  io.channels.write_data_channel.WVALID := false.B
+  io.channels.write_data_channel.WDATA := 0.U
+  io.channels.write_data_channel.WSTRB := 0.U
+  io.channels.write_response_channel.BREADY := false.B
 }

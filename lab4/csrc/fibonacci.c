@@ -19,4 +19,6 @@ int fib(int a) {
 
 int main() {
   *(int *)(4) = fib(10);
+  *(int*)(0) = 0xbabecafe;  // anchor for program finished
+  return 0;
 }

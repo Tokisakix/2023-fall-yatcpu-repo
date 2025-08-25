@@ -27,9 +27,9 @@ RISC-V 有六种基本的指令类型：
 [RISC-V Assembly Reference Card](https://www.cl.cam.ac.uk/teaching/1617/ECAD+Arch/files/docs/RISCVGreenCardv8-20151013.pdf)
 
 ??? abstract "RISC-V 基础整数指令格式及汇编语法 refcard"
-    ![](images/rv-refcard-page1.png)
+    ![](../cheatsheets/images/riscv-refcard-page1-fmt-32i.png)
 
-    ![](images/rv-asm-refcard-page1.png)
+    ![](../cheatsheets/images/riscv-asm-refcard-page1.png)
 
 TODO: asm example and godbolt showcase
 

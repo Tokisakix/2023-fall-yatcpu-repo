@@ -3,8 +3,15 @@ cmake_minimum_required(VERSION 3.18)
 project(yatcpu-programs C CXX ASM)
 
 # Setting variables
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 --target=riscv32-unknown-elf -march=rv32i -mabi=ilp32")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 --target=riscv32-unknown-elf -march=rv32i -mabi=ilp32")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O0 -march=rv32i -mabi=ilp32")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -O0 -march=rv32i -mabi=ilp32")
+
+if (CMAKE_C_COMPILER EQUAL "clang")
+	# append --target=riscv32-unknown-elf to flags
+	set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --target=riscv32-unknown-elf")
+	set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} --target=riscv32-unknown-elf")
+endif()
+
 set(C_PROGRAMS tetris hello fibonacci quicksort paging tetris_mmu say_goodbye)
 set(ASM_PROGRAMS mmio sb)
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/link.lds)
@@ -38,6 +45,11 @@ foreach(program IN LISTS C_PROGRAMS ASM_PROGRAMS PROGRAMS)
 		TARGET ${program}
 		POST_BUILD
 		COMMAND ${CMAKE_OBJCOPY} ARGS ${OBJCOPY_ARGS} $<TARGET_FILE:${program}> ${CMAKE_SOURCE_DIR}/${DEST_DIR}/${program}.asmbin
+	)
+	add_custom_command(
+		TARGET ${program}
+		POST_BUILD
+		COMMAND ${CMAKE_OBJDUMP} ARGS -d $<TARGET_FILE:${program}> > ${CMAKE_SOURCE_DIR}/${DEST_DIR}/${program}.dump
 	)
 endforeach()
 

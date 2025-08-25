@@ -14,12 +14,13 @@
 
 package riscv.fivestage
 
-import board.basys3.BootStates
-import bus.BusSwitch
+import scala.util.control.Breaks._
 import chisel3._
 import chisel3.util.{is, switch}
 import chiseltest._
 import org.scalatest.flatspec.AnyFlatSpec
+import board.basys3.BootStates
+import bus.BusSwitch
 import peripheral.{DummySlave, Memory, ROMLoader}
 import riscv.core.fivestage.{CPU, ProgramCounter}
 import riscv.{Parameters, TestAnnotations}
@@ -113,36 +114,57 @@ class TestTopModule(exeFilename: String) extends Module {
 
 
 class FibonacciTest extends AnyFlatSpec with ChiselScalatestTester {
-  behavior of "Five Stage CPU"
+  behavior of "CPU"
   it should "calculate recursively fibonacci(10)" in {
     test(new TestTopModule("fibonacci.asmbin")).withAnnotations(TestAnnotations.annos) { c =>
+      c.clock.setTimeout(100 * 1000)
       c.io.interrupt.poke(0.U)
-      for (i <- 1 to 100) {
-        c.clock.step(1000)
-        c.io.mem_debug_read_address.poke((i * 4).U) // Avoid timeout
-      }
+      c.io.mem_debug_read_address.poke(0.U)
+
+      var cycle_passed = 0
+      breakable { while (true) {
+        c.clock.step()
+        cycle_passed += 1
+        if (c.io.mem_debug_read_data.peek().litValue == 0xbabecafeL) {
+          c.clock.step(100)
+          break()
+        }
+      }}
 
       c.io.mem_debug_read_address.poke(4.U)
       c.clock.step()
       c.io.mem_debug_read_data.expect(55.U)
+
+      print(s"Cycles passed: $cycle_passed")
     }
   }
 }
 
 class QuicksortTest extends AnyFlatSpec with ChiselScalatestTester {
-  behavior of "Five Stage CPU"
+  behavior of "CPU"
   it should "quicksort 10 numbers" in {
     test(new TestTopModule("quicksort.asmbin")).withAnnotations(TestAnnotations.annos) { c =>
+      c.clock.setTimeout(50 * 1000)
       c.io.interrupt.poke(0.U)
-      for (i <- 1 to 50) {
-        c.clock.step(1000)
-        c.io.mem_debug_read_address.poke((i * 4).U) // Avoid timeout
-      }
+      c.io.mem_debug_read_address.poke(0.U)
+
+      var cycle_passed = 0
+      breakable { while (true) {
+        c.clock.step()
+        cycle_passed += 1
+        if (c.io.mem_debug_read_data.peek().litValue == 0xbabecafeL) {
+          c.clock.step(100)
+          break()
+        }
+      }}
+
       for (i <- 1 to 10) {
         c.io.mem_debug_read_address.poke((4 * i).U)
         c.clock.step()
         c.io.mem_debug_read_data.expect((i - 1).U)
       }
+
+      print(s"Cycles passed: $cycle_passed")
     }
   }
 }

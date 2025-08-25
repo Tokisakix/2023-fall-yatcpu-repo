@@ -91,26 +91,26 @@ class AXI4LiteChannels(addrWidth: Int, dataWidth: Int) extends Bundle {
 }
 
 class AXI4LiteSlaveBundle(addrWidth: Int, dataWidth: Int) extends Bundle {
-  val read = Output(Bool())
-  val write = Output(Bool())
-  val read_data = Input(UInt(dataWidth.W))
-  val read_valid = Input(Bool())
+  val read = Output(Bool())                 // tell slave device to read
+  val write = Output(Bool())                // tell slave device to write
+  val read_data = Input(UInt(dataWidth.W))  // data read from slave device
+  val read_valid = Input(Bool())            // indicates if read_data is valid
   val write_data = Output(UInt(dataWidth.W))
   val write_strobe = Output(Vec(Parameters.WordSize, Bool()))
   val address = Output(UInt(addrWidth.W))
 }
 
 class AXI4LiteMasterBundle(addrWidth: Int, dataWidth: Int) extends Bundle {
-  val read = Input(Bool())
-  val write = Input(Bool())
+  val read = Input(Bool())                  // request a read transaction
+  val write = Input(Bool())                 // request a write transaction
   val read_data = Output(UInt(dataWidth.W))
   val write_data = Input(UInt(dataWidth.W))
   val write_strobe = Input(Vec(Parameters.WordSize, Bool()))
   val address = Input(UInt(addrWidth.W))
 
-  val busy = Output(Bool())
-  val read_valid = Output(Bool())
-  val write_valid = Output(Bool())
+  val busy = Output(Bool())                 // if busy, master is not ready to accept new transactions
+  val read_valid = Output(Bool())           // indicates read transaction done successfully and asserts for ONLY 1 cycle.
+  val write_valid = Output(Bool())          // indicates write transaction done successfully and asserts for ONLY 1 cycle.
 }
 
 object AXI4LiteStates extends ChiselEnum {

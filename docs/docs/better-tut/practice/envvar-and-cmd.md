@@ -18,15 +18,15 @@ Writen By: [PurplePower](https://github.com/PurplePower)
 ???+ abstract "实践：打开一个终端窗口"
 
     === "Windows CMD"
-        ![打开一个Windows CMD 窗口](assets/open-cmd-windows.png){width=70%}
+        ![打开一个Windows CMD 窗口](images/open-cmd-windows.png){width=70%}
 
         如图，使用 Win+R 快捷键调出运行窗口，输入 cmd 即可打开命令行窗口。
     === "Windows Powershell"
-        ![打开一个 Powershell 终端窗口](assets/open-pwsl-windows.png){width=80%}
+        ![打开一个 Powershell 终端窗口](images/open-pwsl-windows.png){width=80%}
 
         如图，使用 Win+R 快捷键调出运行窗口，输入 powershell 即可打开命令行窗口。您也可以使用其他终端软件，如 Windows Terminal等。
     === "Linux"
-        ![打开一个 Linux 终端窗口](assets/open-terminal-linux.png){align=left, width=70%}
+        ![打开一个 Linux 终端窗口](images/open-terminal-linux.png){align=left, width=70%}
         
         如图，如果您使用带 GUI 界面的 Linux，如 Ubuntu，则可以在桌面栏点击 Terminal 图标以打开一个可以输入文字的终端窗口。
 
@@ -39,21 +39,21 @@ Writen By: [PurplePower](https://github.com/PurplePower)
         echo %PATH%
         ```
 
-        ![cmd 输出 PATH 环境变量内容](assets/cmd-echo-path.png)
+        ![cmd 输出 PATH 环境变量内容](images/cmd-echo-path.png)
 
     === "Windows Powershell"
         ```powershell
         echo $env:PATH
         ```
 
-        ![powershell 输出 PATH 环境变量内容](assets/powershell-echo-path.png)
+        ![powershell 输出 PATH 环境变量内容](images/powershell-echo-path.png)
 
     === "Linux"
         ```bash
         echo $PATH
         ```
 
-        ![bash 输出 PATH 环境变量内容](assets/bash-echo-path.png)
+        ![bash 输出 PATH 环境变量内容](images/bash-echo-path.png)
 
 可以看到，在这几种 shell 中，如何指代环境变量的方法各有不同：Windows 上的 `cmd` 使用百分号来包裹环境变量名 `%<name>%`，`powershell` 则使用 `$env:<name>`，而 Linux 上的 `bash` 则使用 `$<name>`。另外，Windows 和 Linux 的环境变量中多个值的分隔符也不同，Windows 使用分号 `;`，因为引号会作为盘符后的分隔符而存在于路径中，Linux 则使用引号 `:`。此外还有一个需要注意的点是，Windows上的环境变量名不区分大小写，而 Linux 上则是大小写敏感的。
 
@@ -76,11 +76,11 @@ PATH 环境变量是系统保留的环境变量名，它包含了一系列目录
 
         您可按下图步骤打开系统变量编辑窗口：
 
-        ![打开环境变量面板](assets/win-modify-envvar-1.png)
+        ![打开环境变量面板](images/win-modify-envvar-1.png)
 
         随后，您可以修改系统变量 PATH。例如，当您希望能直接在命令行键入 `vivado` 以正确调用 `E:\Xilinx\Vivado\2020.1\bin\vivado.bat` 时，您应添加该文件所在路径 `E:\Xilinx\Vivado\2020.1\bin`，而非包含文件名的路径。
 
-        ![修改系统变量 PATH](assets/win-modify-envvar-2.png)
+        ![修改系统变量 PATH](images/win-modify-envvar-2.png)
 
         随后，您需要逐步点击“确定”以保存修改。系统变量修改后，您需要重新打开命令行或 powershell 以使其生效。您可以重新打印 PATH 变量以检查是否正确设置。
 
