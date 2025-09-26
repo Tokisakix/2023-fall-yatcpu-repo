@@ -36,6 +36,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.wb_reg_write_source.expect(RegWriteSource.Memory)
       c.io.memory_read_enable.expect(true.B)
       c.io.memory_write_enable.expect(false.B)
+      c.clock.step()
 
 
       // InstructionTypes.S 
@@ -47,6 +48,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.regs_reg2_read_address.expect(10.U)
       c.io.memory_write_enable.expect(true.B)
       c.io.reg_write_enable.expect(false.B)
+      c.clock.step()
 
 
       // InstructionTypes.I, I-type instructions
@@ -58,6 +60,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.reg_write_enable.expect(true.B)
       c.io.reg_write_address.expect(3.U)
       c.io.wb_reg_write_source.expect(RegWriteSource.ALUResult)
+      c.clock.step()
 
 
       // InstructionTypes.B, B-type instructions
@@ -67,6 +70,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.ex_immediate.expect(16.U)
       c.io.regs_reg1_read_address.expect(2.U)
       c.io.regs_reg2_read_address.expect(4.U)
+      c.clock.step()
       
 
       // InstructionTypes.RM, R-type instructions
@@ -77,6 +81,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.regs_reg2_read_address.expect(2.U)
       c.io.reg_write_enable.expect(true.B)
       c.io.reg_write_address.expect(3.U)
+      c.clock.step()
 
 
       // lui, U-type
@@ -88,6 +93,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.reg_write_address.expect(5.U)
       c.io.ex_immediate.expect((2 << 12).U)
       c.io.wb_reg_write_source.expect(RegWriteSource.ALUResult)
+      c.clock.step()
 
 
       // jal, J-type
@@ -98,6 +104,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.wb_reg_write_source.expect(RegWriteSource.NextInstructionAddress)
       c.io.reg_write_enable.expect(true.B)
       c.io.reg_write_address.expect(5.U)
+      c.clock.step()
 
 
       // jalr, I-type
@@ -109,6 +116,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.wb_reg_write_source.expect(RegWriteSource.NextInstructionAddress)
       c.io.reg_write_enable.expect(true.B)
       c.io.reg_write_address.expect(5.U)
+      c.clock.step()
 
 
       // auipc, U-type
@@ -119,7 +127,7 @@ class InstructionDecoderTest extends AnyFlatSpec with ChiselScalatestTester{
       c.io.reg_write_enable.expect(true.B)
       c.io.reg_write_address.expect(2.U)
       c.io.wb_reg_write_source.expect(RegWriteSource.ALUResult)
-
+      c.clock.step()
 
     }
   }
