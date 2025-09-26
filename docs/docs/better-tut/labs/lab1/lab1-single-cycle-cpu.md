@@ -288,12 +288,12 @@ CPUBundle 是 CPU 和内存等外设进行数据交换的通道。
 
 
 
-1. `src\test\scala\riscv\singlecycle` 中的测试文件 `ExecuteTest.scala`, `InstructionDecoderTest.scala` 和 `InstructionFetch.scala` 分别对相应部件进行单元测试，以确保单个部件的正确性。请您选择其中至少一个测试，并
-    1. 简述测试文件中的语句是如何测试部件正确性的；
-    2. 在测试波形图上说明部件运行过程中关键信号的变化。
+1. `src\test\scala\riscv\singlecycle` 中的测试文件 `ExecuteTest.scala`, `InstructionDecoderTest.scala`（选择其中一类指令） 和 `InstructionFetch.scala` 分别对相应部件进行单元测试，以确保单个部件的正确性。请您选择其中至少一个测试，并
+    1. 简述测试文件中的语句是如何测试部件正确性的；如 `InstructionDecoderTest` 中对各类型指令均进行了测试，那对于 `L` 类指令，为何设置相应的 `expect` 值是那样的？
+    2. 在测试波形图上说明部件运行过程中关键信号的变化。如 `InstructionDecoderTest` 中的 `L` 类指令测试，找到其在波形图上的位置，并显示相应信号线的值。
 2. 测试文件 `CPUTest.scala` 测试了整个 CPU 运行三个程序的正确性。请您选择其中至少一个程序的运行，并
-    1. 概述该程序做了什么，执行结果如何被检查；
-    2. 在测试波形图上简单分析其执行，并说明检查执行结果时的波形。
+    1. 查看 `csrc` 文件夹下对应 C 文件的内容，概述该程序做了什么，执行结果如何在 Chisel 测试中被检查；
+    2. 在测试波形图上简单分析其执行，并说明波形图最后几个周期检查执行结果时的波形。
 3. 说明您在完成实验的过程中，遇到的实验指导不足或改进建议。
 
 <!-- 
