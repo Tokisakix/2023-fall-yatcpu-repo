@@ -21,7 +21,7 @@ import riscv.TestAnnotations
 import riscv.core.{ALUOp1Source, ALUOp2Source, Execute, InstructionTypes}
 
 class ExecuteTest extends AnyFlatSpec with ChiselScalatestTester{
-  behavior of "Exxecute of Single Cycle CPU"
+  behavior of "Execute of Single Cycle CPU"
   it should "execute correctly" in {
     test(new Execute).withAnnotations(TestAnnotations.annos) { c =>
 
